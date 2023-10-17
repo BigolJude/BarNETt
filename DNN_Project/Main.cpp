@@ -7,22 +7,20 @@
 
 int main()
 {
-	std::cout << "Hello World";
+	std::cout << "Hello World" << endl;
 	list<float> inputs {1.0, 4.0};
 	list<float> weights{ -0.5, 0.2 };
-	Neuron* neuron = new Neuron(inputs);
 	
-	neuron = new Neuron(inputs, weights);
+	Neuron* neuron = new Neuron(inputs, weights);
 
-	for (int i = 1; i != 100; ++i)
-	{
-		cout << Initialisation::Random(i, -i) << endl;
-		cout << Initialisation::He(i) << endl;
-	}
+	neuron->weigh();
+	cout << neuron->getWeight() << endl;
 
-	list<float> reluWeights{ -1, 0, 3, 5 };
+	float activation = Activation::ReLu(neuron->getWeight());
 
-	list<float> reluValues = Activation::SoftMax(reluWeights);
+	cout << activation << endl;
+
+	//list<float> reluValues = Activation::SoftMax(weights);
 
 	delete(neuron);
 	inputs.clear();

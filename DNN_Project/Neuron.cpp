@@ -29,15 +29,10 @@ void Neuron::weigh()
 	for (int i = 0; i < inputs.size(); ++i)
 	{
 		output = output + (*inputsIt * *weightsIt);
-
-		std::cout << "Input values: " << *inputsIt << endl;
-		std::cout << "Weight values: " << *weightsIt << endl;
-		std::cout << "Sum:" << (*inputsIt * *weightsIt) << endl;
-		std::cout << "Weight: " << output << endl;
-
 		advance(weightsIt, 1);
 		advance(inputsIt, 1);
 	}
+	this->weight = output;
 }
 
 void Neuron::populateWeights()
@@ -50,4 +45,9 @@ void Neuron::populateWeights()
 		std::cout << weightedNumber << "\n";
 		this->weights.push_back(weightedNumber);
 	}
+}
+
+float Neuron::getWeight()
+{
+	return this->weight;
 }
