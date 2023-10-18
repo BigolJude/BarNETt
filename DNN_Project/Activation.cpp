@@ -38,8 +38,13 @@ list<float> Activation::SoftMax(list<float> weights)
 		float weight = exp(*weightsIt) / denominator;
 		outputs.push_back(weight);
 		advance(weightsIt, 1);
-		cout << "Weight from relu" << weight << endl;
+		cout << "Weight from softmax" << weight << endl;
 	}
 
 	return outputs;
+}
+
+float Activation::Step(float weight)
+{
+	return static_cast<float>(weight > 0);
 }

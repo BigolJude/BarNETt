@@ -8,17 +8,15 @@
 int main()
 {
 	std::cout << "Hello World" << endl;
-	list<float> inputs {1.0, 4.0};
-	list<float> weights{ -0.5, 0.2 };
+	list<float> inputs {0.5, 4.0, 1};
+	list<float> weights{ -0.5, 0.2 , 0.4};
 	
-	Neuron* neuron = new Neuron(inputs, weights);
-
-	neuron->weigh();
-	cout << neuron->getWeight() << endl;
+	Neuron* neuron = new Neuron(inputs);
 
 	float activation = Activation::ReLu(neuron->getWeight());
 
-	cout << activation << endl;
+
+	neuron->train(0.001, 0.1);
 
 	//list<float> reluValues = Activation::SoftMax(weights);
 

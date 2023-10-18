@@ -1,5 +1,7 @@
 #include "Neuron.h"
 #include "Initialisation.h"
+#include "Activation.h"
+#include <cmath>
 #include <list>
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,6 +47,32 @@ void Neuron::populateWeights()
 		std::cout << weightedNumber << "\n";
 		this->weights.push_back(weightedNumber);
 	}
+}
+void Neuron::train(float learningRate, float desired)
+{
+	float error = 1;
+	float guess = 0;
+	while(abs(error) > 0.000001)
+	{
+		this->weigh();
+		guess = Activation::ReLu(this->weight);
+		cout << "guess: " << guess << endl;
+		error = desired - guess;
+		cout << "error: " << error << endl;
+
+		list<float>::iterator weightsIt = weights.begin();
+		list<float>::iterator inputsIt = inputs.begin();
+
+		for (int i = 0; i < inputs.size(); ++i)
+		{
+			cout << i << "." << *weightsIt << endl;
+			*weightsIt = *weightsIt + (learningRate * error * *inputsIt);
+			advance(weightsIt, 1);
+			advance(inputsIt, 1);
+		}
+	}
+	cout << "guess: " << guess << endl;
+	cout << "error: " << error << endl;
 }
 
 float Neuron::getWeight()

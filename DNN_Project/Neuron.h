@@ -10,6 +10,7 @@ public:
 	float getWeight();
 	void weigh();
 	void populateWeights();
+	void train(float learningRate, float desired);
 private:
 	float weight;
 	list<float> weights;
