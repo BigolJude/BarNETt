@@ -5,18 +5,16 @@ using namespace std;
 class Neuron
 {
 public:
-	Neuron(list<float> inputs);
-	Neuron(list<float> inputs, list<float> weights);
-	void setWeights(list<float> weights);
-	void setInputs(list<float> weights);
+	Neuron(int inputs);
+	Neuron(list<float> weights);
+	void weigh(list<float> inputs);
+	void train(list<float> inputs, float learningRate, float desired);
 	float getWeight();
-	list<float> getWeights();
-	void weigh();
+	void setWeights(list<float> weights);
 	void printWeights();
-	void populateWeights();
-	void train(float learningRate, float desired);
+	list<float> getWeights();
+	void populateWeights(int neuronCount);
 private:
 	float weight;
 	list<float> weights;
-	list<float> inputs;
 };
