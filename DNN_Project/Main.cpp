@@ -8,20 +8,18 @@
 int main()
 {
 	std::cout << "Hello World" << endl;
-	list<float> inputs {0.5, 4.0, 1};
-	list<float> weights{ -0.5, 0.2 , 0.4};
+	list<float> inputs1{ 0.1, 0.1, 1 };
+	list<float> inputs2{ 0.5, 0.5, 1 };
 	
-	Neuron* neuron = new Neuron(inputs);
+	Neuron* neuron = new Neuron(inputs1);
 
-	float activation = Activation::ReLu(neuron->getWeight());
+	neuron->train(0.0001, 0);
 
+	cout << "here" << endl;
 
-	neuron->train(0.001, 0.1);
-
-	//list<float> reluValues = Activation::SoftMax(weights);
+	cout << "weight: " << neuron->getWeight() << endl;
 
 	delete(neuron);
-	inputs.clear();
-	weights.clear();
-
+	inputs1.clear();
+	inputs2.clear();
 }
