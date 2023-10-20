@@ -15,5 +15,6 @@ public:
 	void addLayer(int previousLayerCount, int neuronCount, string activation);
 private:
 	list<Layer> layers;
+	int getMax(list<float> predictions);
 };
 

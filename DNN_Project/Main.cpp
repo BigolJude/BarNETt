@@ -13,8 +13,8 @@ int main()
 	list<float> inputs2{ 8.4, 8.0, 190, 0.49 };
 	list<float> inputs3{ 6.2, 5.1, 84,  0.60 };
 	list<float> inputs4{ 6.1, 5.5, 85,  0.57 };
-	list<float> inputs5{ 9.0, 9.5, 188, 0.59 };
-	list<float> inputs6{ 8.5, 4.2, 83,  0.46 };
+	list<float> inputs5{ 9.0, 9.5, 83,	0.59 };
+	list<float> inputs6{ 8.5, 4.2, 188, 0.46 };
 	list<float> inputs7{ 7.9, 7.1, 182, 0.56 };
 	list<float> inputs8{ 7.4, 5.2, 79,  0.44 };
 
