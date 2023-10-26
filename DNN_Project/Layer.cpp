@@ -1,4 +1,6 @@
 #include "Layer.h"
+#include <List>
+using namespace std;
 
 Layer::Layer(int previousLayerCount, int neuronCount, string activation)
 {
@@ -35,13 +37,13 @@ list<float> Layer::getNeuronWeights()
 	return *weights;
 }
 
-void Layer::train(list<float> inputs, float learningRate, float expected)
+void Layer::train(float learningRate, float error)
 {
 	list<Neuron>::iterator neuronsIt = neurons.begin();
 
 	for (int i = 0; i < neurons.size(); ++i)
 	{
-		neuronsIt->train(inputs, learningRate, expected);
+		neuronsIt->train(learningRate, error);
 		advance(neuronsIt, 1);
 	}
 }
@@ -55,4 +57,16 @@ void Layer::weigh(list<float> inputs)
 		neuronsIt->weigh(inputs);
 		advance(neuronsIt, 1);
 	}
+}
+
+Neuron Layer::getNeuron(int index)
+{
+	list<Neuron>::iterator neuronIt = neurons.begin();
+	advance(neuronIt, index);
+	return *neuronIt;
+}
+
+list<Neuron> Layer::getNeurons()
+{
+	return this->neurons;
 }

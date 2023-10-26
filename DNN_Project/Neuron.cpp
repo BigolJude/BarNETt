@@ -42,7 +42,7 @@ void Neuron::weigh(list<float> inputs)
 		advance(weightsIt, 1);
 		advance(inputsIt, 1);
 	}
-	this->weight = output;
+	this->weight = Activation::ReLu(output);
 }
 
 /// <summary>
@@ -65,18 +65,15 @@ void Neuron::populateWeights(int neuronCount)
 /// </summary>
 /// <param name="learningRate"></param>
 /// <param name="error"></param>
-void Neuron::train(list<float> inputs, float learningRate, float error)
+void Neuron::train(float learningRate, float error)
 {	
 	list<float>::iterator weightsIt = weights.begin();
-	list<float>::iterator inputsIt = inputs.begin();
 
-
-
-	for (int i = 0; i < inputs.size(); ++i)
+	for (int i = 0; i < weights.size(); ++i)
 	{
-		*weightsIt = *weightsIt + (learningRate * error * *inputsIt);
+		*weightsIt = *weightsIt - (learningRate * error);
+
 		advance(weightsIt, 1);
-		advance(inputsIt, 1);
 	}
 }
 

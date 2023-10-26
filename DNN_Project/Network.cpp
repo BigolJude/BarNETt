@@ -1,9 +1,12 @@
 #include "Network.h"
 #include "Layer.h"
 #include "Activation.h"
+#include "Neuron.h"
 #include "Loss.h"
 #include <List>
 #include <algorithm>
+#include <iostream>
+using namespace std;
 
 Network::Network(list<Layer> layers)
 {
@@ -17,14 +20,13 @@ void Network::train(list<float> inputs, float learningRate, list<float> expected
 	this->predict(inputs);
 	list<float> predictions = Activation::SoftMax(this->getPrediction());
 	float error = Loss::crossEntropy(predictions, expected);
-
 	float outNet = error * (1 - error);
 
 	list<Layer>::iterator layersIt = layers.begin();
 
 	for (int i = 0; i < layers.size(); ++i)
 	{
-		layersIt->train(inputs, learningRate, 0.1);
+		layersIt->train(learningRate, 0.1);
 		inputs = layersIt->getNeuronWeights();
 		advance(layersIt, 1);
 	}
@@ -75,4 +77,15 @@ int Network::getMax(list<float> numbers)
 		advance(numbersIt, 1);
 	}
 	return largestNumber;
+}
+
+void Network::traverseLayers(Layer layer)
+{
+}
+
+Layer Network::getLayer(int index)
+{
+	list<Layer>::iterator layersIt = layers.begin();
+	advance(layersIt, index);
+	return *layersIt;
 }

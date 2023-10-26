@@ -13,8 +13,10 @@ public:
 	list<float> getPrediction();
 	void addLayer(Layer layer);
 	void addLayer(int previousLayerCount, int neuronCount, string activation);
+	void traverseLayers(Layer layer);
+	void traverseLayerTest();
 private:
 	list<Layer> layers;
 	int getMax(list<float> predictions);
+	Layer getLayer(int index);
 };
-
