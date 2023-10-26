@@ -64,18 +64,14 @@ void Neuron::populateWeights(int neuronCount)
 /// Trains the singular neuron.
 /// </summary>
 /// <param name="learningRate"></param>
-/// <param name="desired"></param>
-void Neuron::train(list<float> inputs, float learningRate, float desired)
-{
-	float error = 1;
-	float guess = 0;
-	this->weigh(inputs);
-	guess = Activation::ReLu(this->weight);
-	error = desired - guess;
-	
+/// <param name="error"></param>
+void Neuron::train(list<float> inputs, float learningRate, float error)
+{	
 	list<float>::iterator weightsIt = weights.begin();
 	list<float>::iterator inputsIt = inputs.begin();
-	
+
+
+
 	for (int i = 0; i < inputs.size(); ++i)
 	{
 		*weightsIt = *weightsIt + (learningRate * error * *inputsIt);

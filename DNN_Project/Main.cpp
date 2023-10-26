@@ -32,17 +32,6 @@ int main()
 
 	float learningRate = 0.0001;
 	float expected = 1;
-
-	for(int i = 0; i < 1000; ++i)
-	{
-		network->train(inputs1, learningRate, 0);
-		network->train(inputs2, learningRate, 0);
-		network->train(inputs3, learningRate, 1);
-		network->train(inputs4, learningRate, 1);
-		network->train(inputs5, learningRate, 1);
-		network->train(inputs6, learningRate, 0);
-		network->train(inputs7, learningRate, 0);
-	}
 	
 	network->predict(inputs8);
 

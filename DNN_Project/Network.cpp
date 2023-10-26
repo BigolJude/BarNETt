@@ -1,6 +1,7 @@
 #include "Network.h"
 #include "Layer.h"
 #include "Activation.h"
+#include "Loss.h"
 #include <List>
 #include <algorithm>
 
@@ -11,16 +12,19 @@ Network::Network(list<Layer> layers)
 
 Network::Network(){}
 
-void Network::train(list<float> inputs, float learningRate, float expected)
+void Network::train(list<float> inputs, float learningRate, list<float> expected)
 {
 	this->predict(inputs);
 	list<float> predictions = Activation::SoftMax(this->getPrediction());
+	float error = Loss::crossEntropy(predictions, expected);
+
+	float outNet = error * (1 - error);
 
 	list<Layer>::iterator layersIt = layers.begin();
 
 	for (int i = 0; i < layers.size(); ++i)
 	{
-		layersIt->train(inputs, learningRate, expected);
+		layersIt->train(inputs, learningRate, 0.1);
 		inputs = layersIt->getNeuronWeights();
 		advance(layersIt, 1);
 	}

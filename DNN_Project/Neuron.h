@@ -8,7 +8,7 @@ public:
 	Neuron(int inputs);
 	Neuron(list<float> weights);
 	void weigh(list<float> inputs);
-	void train(list<float> inputs, float learningRate, float desired);
+	void train(list<float> inputs, float learningRate, float error);
 	float getWeight();
 	void setWeights(list<float> weights);
 	void printWeights();
