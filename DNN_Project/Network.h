@@ -13,7 +13,7 @@ public:
 	list<float> getPrediction();
 	void addLayer(Layer layer);
 	void addLayer(int previousLayerCount, int neuronCount, string activation);
-	void traverseLayers(Layer layer);
+	void traverseLayers(int layerCount, int weightIndex);
 	void traverseLayerTest();
 private:
 	list<Layer> layers;

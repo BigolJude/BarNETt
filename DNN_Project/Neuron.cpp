@@ -57,7 +57,8 @@ void Neuron::populateWeights(int neuronCount)
 		float weightedNumber = Initialisation::Random(weightedRange, -weightedRange);
 		this->weights.push_back(weightedNumber);
 	}
-	this->weights.push_back(1);
+	//TODO implement bias this is not how it works.
+	//this->weights.push_back(1);
 }
 
 /// <summary>

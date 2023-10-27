@@ -79,13 +79,51 @@ int Network::getMax(list<float> numbers)
 	return largestNumber;
 }
 
-void Network::traverseLayers(Layer layer)
+void Network::traverseLayers(int layerCount, int weightIndex)
 {
+	if (layerCount >= layers.size())
+	{
+		return;
+	}
+
+	Layer layer = this->getLayer((layers.size() - 1)- layerCount);
+
+	if (layerCount == 0)
+	{
+		list<Neuron> neurons = layer.getNeurons();
+		list<Neuron>::iterator neuronsIt = neurons.begin();
+		for (int i = 0; i < neurons.size(); ++i)
+		{
+			Neuron neuron = layer.getNeuron(i);
+			list<float> weights = neuron.getWeights();
+
+			for (int j = 0; j < weights.size(); ++j)
+			{
+				cout << "layer:" << layerCount << " neuron: " << i << " weight: " << j << endl;
+				traverseLayers(layerCount + 1, j);
+			}
+		}
+	}
+	else
+	{
+		Neuron neuron = layer.getNeuron(weightIndex);
+		list<float> weights = neuron.getWeights();
+
+		for (int j = 0; j < weights.size(); ++j)
+		{
+			cout << "layer:" << layerCount << " neuron: " << weightIndex << " weight: " << j << endl;
+			traverseLayers(layerCount + 1, j);
+		}
+	}
 }
 
 Layer Network::getLayer(int index)
 {
 	list<Layer>::iterator layersIt = layers.begin();
-	advance(layersIt, index);
+	if(index != 0)
+	{
+		advance(layersIt, index);
+	}
+
 	return *layersIt;
 }
