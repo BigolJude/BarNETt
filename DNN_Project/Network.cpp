@@ -50,11 +50,21 @@ list<float> Network::getPrediction()
 	return outputLayer.getNeuronWeights();
 }
 
+/// <summary>
+/// Adds a layer to the network given a layer object.
+/// </summary>
+/// <param name="layer"></param>
 void Network::addLayer(Layer layer)
 {
 	layers.push_back(layer);
 }
 
+/// <summary>
+/// Creates and adds a layer to the network given the layer's properties.
+/// </summary>
+/// <param name="previousLayerCount"></param>
+/// <param name="neuronCount"></param>
+/// <param name="activation"></param>
 void Network::addLayer(int previousLayerCount, int neuronCount, string activation)
 {
 	Layer* layer = new Layer(previousLayerCount, neuronCount, activation);
@@ -79,6 +89,11 @@ int Network::getMax(list<float> numbers)
 	return largestNumber;
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="layerCount"></param>
+/// <param name="weightIndex"></param>
 void Network::traverseLayers(int layerCount, int weightIndex)
 {
 	if (layerCount >= layers.size())
@@ -88,6 +103,7 @@ void Network::traverseLayers(int layerCount, int weightIndex)
 
 	Layer layer = this->getLayer((layers.size() - 1)- layerCount);
 
+	// Traversing all values on the last layer.
 	if (layerCount == 0)
 	{
 		list<Neuron> neurons = layer.getNeurons();
