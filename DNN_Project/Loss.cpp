@@ -8,9 +8,11 @@ float Loss::crossEntropy(list<float> predicted, list <float> expected)
 
 	float loss = 0;
 
-	for (int i = 0; i > predicted.size(); ++i)
+	for (int i = 0; i < predicted.size(); ++i)
 	{
 		loss = loss + (*expectedIt * log(*predictedIt));
+		advance(predictedIt, 1);
+		advance(expectedIt, 1);
 	}
 
 	return -loss;

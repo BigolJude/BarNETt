@@ -1,6 +1,7 @@
 #include <iostream>
 #include <list>
 #include "layer.h"
+#include "loss.h"
 #include "Initialisation.h"
 #include "Activation.h"
 #include "Network.h"
@@ -8,7 +9,7 @@
 
 int main()
 {
-	list<float> inputs1{ 8.4, 7.3, 192, 0.55 };
+	list<float> inputs1{ 8.4, 7.3, 192};
 
 	Layer* layer1 = new Layer(3, 3, "relu");
 	Layer* layer2 = new Layer(3, 4, "relu");
@@ -19,8 +20,9 @@ int main()
 	network->addLayer(*layer2);
 	network->addLayer(*layer3);
 
-	network->traverseLayers(0,0);
-
+	network->train(inputs1, 0.0001, {0, 1, 0});
+	float crossEntropyTests = Loss::crossEntropy({ 0.775,0.116,00.39,0.07 }, { 1,0,0,0 });
+	cout << "loss: " << crossEntropyTests << endl;
 	cout << "finished!" << endl;
 
 	delete(layer1);
