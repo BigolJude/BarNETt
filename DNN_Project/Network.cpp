@@ -18,11 +18,15 @@ Network::Network(){}
 void Network::train(list<float> inputs, float learningRate, list<float> expected)
 {
 	this->learningRate = learningRate;
-	this->predict(inputs);
-	list<float> predictions = Activation::SoftMax(this->getPrediction());
-	float error = Loss::crossEntropy(predictions, expected);
-	cout << "error: " << error << endl;
-	traverseLayer(0, 0, error);
+	float error = 1;
+	while (error > 0.5)
+	{
+		this->predict(inputs);
+		list<float> predictions = Activation::SoftMax(this->getPrediction());
+		error = Loss::crossEntropy(predictions, expected);
+		cout << "error: " << error << endl;
+		traverseLayer(0, 0, error);
+	}
 }
 
 void Network::predict(list<float> inputs)
@@ -32,7 +36,7 @@ void Network::predict(list<float> inputs)
 	for (int i = 0; i < layers.size(); ++i)
 	{
 		layersIt->weigh(inputs);
-		inputs = layersIt->getNeuronWeights();
+		inputs = layersIt->getActivationOutputs();
 		advance(layersIt, 1);
 	}
 }
@@ -99,13 +103,14 @@ void Network::traverseLayer(int layerCount, int weightIndex, float error)
 	// Traversing all values on the last layer.
 	if (layerCount == 0)
 	{
-		list<Neuron> neurons = layer.getNeurons();
-		list<Neuron>::iterator neuronsIt = neurons.begin();
+		list<Neuron*> neurons = layer.getNeurons();
+		list<Neuron*>::iterator neuronsIt = neurons.begin();
 
 		for (int i = 0; i < neurons.size(); ++i)
 		{
 			traverseNeuron(layer, weightIndex, layerCount, error);
 		}
+		neurons.clear();
 	}
 	else
 	{
@@ -115,26 +120,30 @@ void Network::traverseLayer(int layerCount, int weightIndex, float error)
 
 void Network::traverseNeuron(Layer layer, int weightIndex, int layerCount, float error)
 {
-	Neuron neuron = layer.getNeuron(weightIndex);
-	list<float> weights = neuron.getWeights();
+	Neuron* neuron = layer.getNeuron(weightIndex);
+	list<float> weights = neuron->getWeights();
 	list<float>::iterator weightsIt = weights.begin();
 
 	for (int j = 0; j < weights.size(); ++j)
 	{
 		float proportionalError = backpropogate(neuron, *weightsIt, error);
-		neuron.train(learningRate, proportionalError);
+		neuron->trainWeight(j, learningRate, proportionalError);
 		errors.push_front(proportionalError);
 
 		cout << "layer:" << layerCount << " neuron: " << weightIndex << " weight: " << j << endl;
-
-		traverseLayer(layerCount + 1, j, error);
+		cout << "error: " << proportionalError << endl;
+		if (!(j < weights.size()))
+		{
+			traverseLayer(layerCount + 1, j, error);
+		}
 
 		advance(weightsIt, 1);
 		errors.pop_front();
 	}
+	neuron = nullptr;
 }
 
-float Network::backpropogate(Neuron neuron, float weight, float error)
+float Network::backpropogate(Neuron* neuron, float weight, float error)
 {
 	list<float>::iterator errorsIt = errors.begin();
 	float weightedTotal = 1;
@@ -142,9 +151,9 @@ float Network::backpropogate(Neuron neuron, float weight, float error)
 	{
 		weightedTotal = weightedTotal * *errorsIt;
 		advance(errorsIt, 1);
-		cout << "Weighted Total:" << weightedTotal << endl;
+		//cout << "Weighted Total:" << weightedTotal << endl;
 	}
-	return weightedTotal * weight * neuron.getWeight();
+	return weightedTotal * weight * neuron->getWeight() * error;
 }
 
 Layer Network::getLayer(int index)

@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Activation.cpp" />
+    <ClCompile Include="CSV.cpp" />
     <ClCompile Include="Initialisation.cpp" />
     <ClCompile Include="Layer.cpp" />
     <ClCompile Include="Loss.cpp" />
@@ -149,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Activation.h" />
+    <ClInclude Include="CSV.h" />
     <ClInclude Include="Initialisation.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="Loss.h" />

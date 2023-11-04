@@ -4,17 +4,7 @@
 #include <iostream>
 using namespace std;
 
-float Activation::ReLu(float weight)
-{
-	if (weight > 0)
-	{
-		return weight;
-	}
-	else
-	{
-		return 0;
-	}
-}
+float Activation::ReLu(float weight) { return (weight > 0) ? weight : 0; }
 
 list<float> Activation::SoftMax(list<float> weights)
 {

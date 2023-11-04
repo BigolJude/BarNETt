@@ -8,15 +8,15 @@ class Layer
 {
 public:
 	Layer(int previousLayerCount, int neuronCount, string activation);
-	Layer(list<Neuron> neurons, string activation);
+	Layer(list<Neuron*> neurons, string activation);
 	list<float> getNeuronWeights();
-	void train(float learningRate, float error);
+	list<float> getActivationOutputs();
 	void weigh(list<float> inputs);
-	Neuron getNeuron(int index);
-	list<Neuron> getNeurons();
+	Neuron* getNeuron(int index);
+	list<Neuron*> getNeurons();
 private:
 	void generateNeurons(int previousLayerCount, int neuronCount);
-	list<Neuron> neurons;
+	list<Neuron*> neurons;
 	string activation;
 };
 

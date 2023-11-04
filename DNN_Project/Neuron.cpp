@@ -42,7 +42,12 @@ void Neuron::weigh(list<float> inputs)
 		advance(weightsIt, 1);
 		advance(inputsIt, 1);
 	}
-	this->weight = Activation::ReLu(output);
+
+	// Including the weighted bias.
+	output = output + (1 * *weightsIt);
+
+	this->weight = output;
+	this->activationOutput = Activation::ReLu(this->weight);
 }
 
 /// <summary>
@@ -50,15 +55,15 @@ void Neuron::weigh(list<float> inputs)
 /// </summary>
 void Neuron::populateWeights(int neuronCount)
 {
+	float weightedRange = Initialisation::He(neuronCount);
 	for (int i = 0; i != neuronCount; ++i)
 	{
-		int randNumber = rand() % 100 + 1;
-		float weightedRange = Initialisation::He(randNumber);
 		float weightedNumber = Initialisation::Random(weightedRange, -weightedRange);
 		this->weights.push_back(weightedNumber);
 	}
 	//TODO implement bias this is not how it works.
-	//this->weights.push_back(1);
+	float biasWeightedNumber = Initialisation::Random(weightedRange, -weightedRange);
+	this->weights.push_back(biasWeightedNumber);
 }
 
 /// <summary>
@@ -66,16 +71,11 @@ void Neuron::populateWeights(int neuronCount)
 /// </summary>
 /// <param name="learningRate"></param>
 /// <param name="error"></param>
-void Neuron::train(float learningRate, float error)
+void Neuron::trainWeight(int weightIndex, float learningRate, float error)
 {	
 	list<float>::iterator weightsIt = weights.begin();
-
-	for (int i = 0; i < weights.size(); ++i)
-	{
-		*weightsIt = *weightsIt - (learningRate * error);
-
-		advance(weightsIt, 1);
-	}
+	advance(weightsIt, weightIndex);
+	*weightsIt = *weightsIt - (learningRate * error);
 }
 
 /// <summary>
@@ -95,6 +95,11 @@ void Neuron::printWeights()
 float Neuron::getWeight()
 {
 	return this->weight;
+}
+
+float Neuron::getActivationOutput()
+{
+	return this->activationOutput;
 }
 
 list<float> Neuron::getWeights()

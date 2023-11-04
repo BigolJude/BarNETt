@@ -14,7 +14,7 @@ public:
 	void addLayer(Layer layer);
 	void addLayer(int previousLayerCount, int neuronCount, string activation);
 	void traverseLayer(int layerCount, int weightIndex, float error);
-	float backpropogate(Neuron neuron, float weight, float error);
+	float backpropogate(Neuron* neuron, float weight, float error);
 	void traverseNeuron(Layer layer, int weightIndex ,int layerCount, float error);
 private:
 	list<Layer> layers;

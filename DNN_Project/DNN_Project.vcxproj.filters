@@ -36,6 +36,9 @@
     <ClCompile Include="Loss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CSV.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Neuron.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Loss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CSV.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
