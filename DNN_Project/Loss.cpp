@@ -1,12 +1,12 @@
 #include "Loss.h"
 #include <list>
 
-float Loss::crossEntropy(list<float> predicted, list <float> expected)
+double Loss::crossEntropy(list<double> predicted, list <double> expected)
 {
-	list<float>::iterator predictedIt = predicted.begin();
-	list<float>::iterator expectedIt = expected.begin();
+	list<double>::iterator predictedIt = predicted.begin();
+	list<double>::iterator expectedIt = expected.begin();
 
-	float loss = 0;
+	double loss = 0;
 
 	for (int i = 0; i < predicted.size(); ++i)
 	{

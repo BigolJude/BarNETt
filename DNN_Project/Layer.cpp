@@ -23,23 +23,25 @@ void Layer::generateNeurons(int previousLayerCount,int neuronCount)
 	}
 }
 
-list<float> Layer::getNeuronWeights()
+list<double> Layer::getNeuronWeights()
 {
 	list<Neuron*>::iterator neuronsIt = neurons.begin();
-	list<float>* weights = new list<float>();
+	list<double>* weights = new list<double>();
 
 	for (int i = 0; i < neurons.size(); ++i)
 	{
-		weights->push_back(neuronsIt._Ptr->_Myval->getWeight());
+		double weight = neuronsIt._Ptr->_Myval->getWeight();
+
+		weights->push_back(weight);
 		advance(neuronsIt, 1);
 	}
 	return *weights;
 }
 
-list<float> Layer::getActivationOutputs()
+list<double> Layer::getActivationOutputs()
 {
 	list<Neuron*>::iterator neuronsIt = neurons.begin();
-	list<float>* outputs = new list<float>();
+	list<double>* outputs = new list<double>();
 
 	for (int i = 0; i < neurons.size(); ++i)
 	{
@@ -49,18 +51,7 @@ list<float> Layer::getActivationOutputs()
 	return *outputs;
 }
 
-//void Layer::train(float learningRate, float error)
-//{
-//	list<Neuron>::iterator neuronsIt = neurons.begin();
-//
-//	for (int i = 0; i < neurons.size(); ++i)
-//	{
-//		neuronsIt->trainWeight(learningRate, error);
-//		advance(neuronsIt, 1);
-//	}
-//}
-
-void Layer::weigh(list<float> inputs)
+void Layer::weigh(list<double> inputs)
 {
 	list<Neuron*>::iterator neuronsIt = neurons.begin();
 

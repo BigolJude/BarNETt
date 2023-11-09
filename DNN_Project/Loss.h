@@ -5,6 +5,6 @@ using namespace std;
 static class Loss
 {
 public:
-	static float crossEntropy(list<float> predicted, list<float> expected);
+	static double crossEntropy(list<double> predicted, list<double> expected);
 };
 

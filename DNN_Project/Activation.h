@@ -5,8 +5,8 @@ using namespace std;
 static class Activation
 {
 public:
-	static float ReLu(float weight);
-	static list<float> SoftMax(list<float> weights);
-	static float Sigmoid(float weight);
-	static float Step(float weight);
+	static double ReLu(double weight);
+	static list<double> SoftMax(list<double> weights);
+	static double Sigmoid(double weight);
+	static double Step(double weight);
 };

@@ -22,7 +22,7 @@ Neuron::Neuron(int neuronCount)
 /// </summary>
 /// <param name="inputs"></param>
 /// <param name="weights"></param>
-Neuron::Neuron(list<float> weights)
+Neuron::Neuron(list<double> weights)
 {
 	this->weights = weights;
 }
@@ -30,10 +30,10 @@ Neuron::Neuron(list<float> weights)
 /// <summary>
 /// Sets the sum of all weights in the Neuron in 'weights'. 
 /// </summary>
-void Neuron::weigh(list<float> inputs)
+void Neuron::weigh(list<double> inputs)
 {
-	list<float>::iterator weightsIt = weights.begin();
-	list<float>::iterator inputsIt = inputs.begin();
+	list<double>::iterator weightsIt = weights.begin();
+	list<double>::iterator inputsIt = inputs.begin();
 	float output = 0;
 
 	for (int i = 0; i < inputs.size(); ++i)
@@ -55,14 +55,14 @@ void Neuron::weigh(list<float> inputs)
 /// </summary>
 void Neuron::populateWeights(int neuronCount)
 {
-	float weightedRange = Initialisation::He(neuronCount);
+	double weightedRange = Initialisation::He(neuronCount);
 	for (int i = 0; i != neuronCount; ++i)
 	{
-		float weightedNumber = Initialisation::Random(weightedRange, -weightedRange);
+		double weightedNumber = Initialisation::Random(weightedRange, -weightedRange);
 		this->weights.push_back(weightedNumber);
 	}
 	//TODO implement bias this is not how it works.
-	float biasWeightedNumber = Initialisation::Random(weightedRange, -weightedRange);
+	double biasWeightedNumber = Initialisation::Random(weightedRange, -weightedRange);
 	this->weights.push_back(biasWeightedNumber);
 }
 
@@ -71,11 +71,15 @@ void Neuron::populateWeights(int neuronCount)
 /// </summary>
 /// <param name="learningRate"></param>
 /// <param name="error"></param>
-void Neuron::trainWeight(int weightIndex, float learningRate, float error)
+void Neuron::trainWeight(int weightIndex, float learningRate, double error)
 {	
-	list<float>::iterator weightsIt = weights.begin();
+	list<double>::iterator weightsIt = weights.begin();
 	advance(weightsIt, weightIndex);
 	*weightsIt = *weightsIt - (learningRate * error);
+	if (isnan(*weightsIt))
+	{
+
+	}
 }
 
 /// <summary>
@@ -83,7 +87,7 @@ void Neuron::trainWeight(int weightIndex, float learningRate, float error)
 /// </summary>
 void Neuron::printWeights()
 {
-	list<float>::iterator weightsIt = weights.begin();
+	list<double>::iterator weightsIt = weights.begin();
 
 	for (int i = 0; i < weights.size(); ++i)
 	{
@@ -102,12 +106,12 @@ float Neuron::getActivationOutput()
 	return this->activationOutput;
 }
 
-list<float> Neuron::getWeights()
+list<double> Neuron::getWeights()
 {
 	return this->weights;
 }
 
-void Neuron::setWeights(list<float> weights)
+void Neuron::setWeights(list<double> weights)
 {
 	this->weights = weights;
 }

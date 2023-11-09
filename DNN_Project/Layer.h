@@ -9,9 +9,9 @@ class Layer
 public:
 	Layer(int previousLayerCount, int neuronCount, string activation);
 	Layer(list<Neuron*> neurons, string activation);
-	list<float> getNeuronWeights();
-	list<float> getActivationOutputs();
-	void weigh(list<float> inputs);
+	list<double> getNeuronWeights();
+	list<double> getActivationOutputs();
+	void weigh(list<double> inputs);
 	Neuron* getNeuron(int index);
 	list<Neuron*> getNeurons();
 private:

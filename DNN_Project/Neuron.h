@@ -6,17 +6,17 @@ class Neuron
 {
 public:
 	Neuron(int inputs);
-	Neuron(list<float> weights);
-	void weigh(list<float> inputs);
-	void trainWeight(int weightIndex, float learningRate, float error);
-	void setWeights(list<float> weights);
+	Neuron(list<double> weights);
+	void weigh(list<double> inputs);
+	void trainWeight(int weightIndex, float learningRate, double error);
+	void setWeights(list<double> weights);
 	float getWeight();
 	void printWeights();
-	list<float> getWeights();
+	list<double> getWeights();
 	void populateWeights(int neuronCount);
 	float getActivationOutput();
 private:
-	float weight;
-	float activationOutput;
-	list<float> weights;
+	double weight;
+	double activationOutput;
+	list<double> weights;
 };

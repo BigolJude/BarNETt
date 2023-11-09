@@ -4,13 +4,13 @@
 #include <iostream>
 using namespace std;
 
-float Activation::ReLu(float weight) { return (weight > 0) ? weight : 0; }
+double Activation::ReLu(double weight) { return (weight > 0) ? weight : 0; }
 
-list<float> Activation::SoftMax(list<float> weights)
+list<double> Activation::SoftMax(list<double> weights)
 {
-	list<float>::iterator weightsIt = weights.begin();
+	list<double>::iterator weightsIt = weights.begin();
 	
-	float denominator = 0;
+	double denominator = 0;
 
 	for (int i = 0; i < weights.size(); ++i)
 	{
@@ -19,22 +19,19 @@ list<float> Activation::SoftMax(list<float> weights)
 	}
 
 	weightsIt = weights.begin();
-	list<float> outputs;
-
-	cout << "Denominator" << denominator << endl;
+	list<double> outputs;
 
 	for (int i = 0; i < weights.size(); ++i)
 	{
 		float weight = exp(*weightsIt) / denominator;
 		outputs.push_back(weight);
 		advance(weightsIt, 1);
-		cout << "Weight from softmax" << weight << endl;
 	}
 
 	return outputs;
 }
 
-float Activation::Step(float weight)
+double Activation::Step(double weight)
 {
-	return static_cast<float>(weight > 0);
+	return static_cast<double>(weight > 0);
 }

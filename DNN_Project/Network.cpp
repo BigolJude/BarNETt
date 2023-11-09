@@ -11,25 +11,39 @@ using namespace std;
 Network::Network(list<Layer> layers)
 {
 	this->layers = layers;
+	this->error = 1;
 }
 
-Network::Network(){}
+Network::Network()
+{
+	this->error = 1;
+}
 
-void Network::train(list<float> inputs, float learningRate, list<float> expected)
+void Network::train(list<double> inputs, float learningRate, list<double> expected)
 {
 	this->learningRate = learningRate;
-	float error = 1;
-	while (error > 0.5)
+	this->predict(inputs);
+	list<double> predictions = Activation::SoftMax(this->getPrediction());
+	double error = Loss::crossEntropy(predictions, expected);
+
+	list<double>::iterator predictionsIt = predictions.begin();
+	list<double>::iterator expectedIt = expected.begin();
+
+	for (int i = 0; i < predictions.size(); ++i)
 	{
-		this->predict(inputs);
-		list<float> predictions = Activation::SoftMax(this->getPrediction());
-		error = Loss::crossEntropy(predictions, expected);
-		cout << "error: " << error << endl;
-		traverseLayer(0, 0, error);
+		cout << *predictionsIt << " - " << *expectedIt << endl;
+		advance(predictionsIt, 1);
+		advance(expectedIt, 1);
 	}
+	cout << "Error: " << error;
+	cout << "-------" << endl;
+
+	this->error = error;
+	traverseLayer(0, 0, error);
+	predictions.clear();
 }
 
-void Network::predict(list<float> inputs)
+void Network::predict(list<double> inputs)
 {
 	list<Layer>::iterator layersIt = layers.begin();
 
@@ -41,7 +55,7 @@ void Network::predict(list<float> inputs)
 	}
 }
 
-list<float> Network::getPrediction()
+list<double> Network::getPrediction()
 {
 	Layer outputLayer = layers.back();
 	return outputLayer.getNeuronWeights();
@@ -69,11 +83,11 @@ void Network::addLayer(int previousLayerCount, int neuronCount, string activatio
 	delete(layer);
 }
 
-int Network::getMax(list<float> numbers)
+int Network::getMax(list<double> numbers)
 {
-	list<float>::iterator numbersIt = numbers.begin();
+	list<double>::iterator numbersIt = numbers.begin();
 
-	float largestNumber = 0;
+	double largestNumber = 0;
 
 	for (int i = 0; i < numbers.size(); ++i)
 	{
@@ -91,7 +105,7 @@ int Network::getMax(list<float> numbers)
 /// </summary>
 /// <param name="layerCount"></param>
 /// <param name="weightIndex"></param>
-void Network::traverseLayer(int layerCount, int weightIndex, float error)
+void Network::traverseLayer(int layerCount, int weightIndex, double error)
 {
 	if (layerCount >= layers.size())
 	{
@@ -118,35 +132,34 @@ void Network::traverseLayer(int layerCount, int weightIndex, float error)
 	}
 }
 
-void Network::traverseNeuron(Layer layer, int weightIndex, int layerCount, float error)
+void Network::traverseNeuron(Layer layer, int weightIndex, int layerCount, double error)
 {
 	Neuron* neuron = layer.getNeuron(weightIndex);
-	list<float> weights = neuron->getWeights();
-	list<float>::iterator weightsIt = weights.begin();
+	list<double> weights = neuron->getWeights();
+	list<double>::iterator weightsIt = weights.begin();
 
 	for (int j = 0; j < weights.size(); ++j)
 	{
-		float proportionalError = backpropogate(neuron, *weightsIt, error);
+		double proportionalError = backpropogate(neuron, *weightsIt, error);
 		neuron->trainWeight(j, learningRate, proportionalError);
 		errors.push_front(proportionalError);
 
-		cout << "layer:" << layerCount << " neuron: " << weightIndex << " weight: " << j << endl;
-		cout << "error: " << proportionalError << endl;
-		if (!(j < weights.size()))
+		if (j < weights.size()-1)
 		{
+			//cout << "Layer: " << layerCount <<" - Neuron: " << weightIndex << " - Weight: " << j << " - Proportional Error: " << proportionalError << endl;
 			traverseLayer(layerCount + 1, j, error);
+			advance(weightsIt, 1);
 		}
-
-		advance(weightsIt, 1);
 		errors.pop_front();
 	}
 	neuron = nullptr;
+	weights.clear();
 }
 
-float Network::backpropogate(Neuron* neuron, float weight, float error)
+double Network::backpropogate(Neuron* neuron, double weight, double error)
 {
-	list<float>::iterator errorsIt = errors.begin();
-	float weightedTotal = 1;
+	list<double>::iterator errorsIt = errors.begin();
+	double weightedTotal = 1;
 	for (int i = 0; i < errors.size(); ++i)
 	{
 		weightedTotal = weightedTotal * *errorsIt;
@@ -165,4 +178,9 @@ Layer Network::getLayer(int index)
 	}
 
 	return *layersIt;
+}
+
+double Network::getError()
+{
+	return error;
 }

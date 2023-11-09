@@ -2,8 +2,8 @@
 static class Initialisation
 {
 public:
-	static float* Xavier(float previousLayerNodeCount, float nextLayerNodeCount);
-	static float He(float previousLayerNodeCount);
-	static float Random(float upperBound, float lowerBound);
+	static double* Xavier(double previousLayerNodeCount, double nextLayerNodeCount);
+	static double He(float previousLayerNodeCount);
+	static double Random(float upperBound, float lowerBound);
 };
 

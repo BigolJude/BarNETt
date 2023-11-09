@@ -5,9 +5,9 @@
 #include "CSV.h"
 using namespace std;
 
-list<list<float>> CSV::read(string file)
+list<list<double>> CSV::read(string file)
 {
-	list<list<float>> values;
+	list<list<double>> values;
 	string line, column;
 	ifstream fileStream(file);
 
@@ -32,15 +32,33 @@ list<list<float>> CSV::read(string file)
 	cout << "the values name" << endl;
 	while (getline(fileStream, line))
 	{
-		list<float> newLine;
+		list<double> newLine;
 		size_t index = 0;
 		string subString;
 		string comma = ",";
+
 		while ((index = line.find(comma)) != string::npos)
 		{
 			subString = line.substr(0, index);
-			newLine.push_back(stof(subString));
+
+			if (newLine.size() <= 3)
+			{
+				newLine.push_back(stod(subString));
+			}
+
 			line.erase(0, index + comma.length());
+		}
+		if (line == "Iris-setosa")
+		{
+			newLine.push_back(1);
+		}
+		else if (line == "Iris-versicolor")
+		{
+			newLine.push_back(2);
+		}
+		else if (line == "Iris-virginica")
+		{
+			newLine.push_back(3);
 		}
 		values.push_back(newLine);
 	}

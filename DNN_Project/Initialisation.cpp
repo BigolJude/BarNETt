@@ -13,20 +13,20 @@ using namespace std;
 /// <param name="previousLayerNodeCount"></param>
 /// <param name="nextLayerNodeCount"></param>
 /// <returns></returns>
-float* Initialisation::Xavier(float previousLayerNodeCount, float nextLayerNodeCount)
+double* Initialisation::Xavier(double previousLayerNodeCount, double nextLayerNodeCount)
 {
-	float* results = new float[2];
+	double* results = new double[2];
 	results[0] = -(sqrt(6.0) / sqrt(previousLayerNodeCount + nextLayerNodeCount));
 	results[1] = (sqrt(6.0) / sqrt(previousLayerNodeCount + nextLayerNodeCount));
 	return results;
 }
 
-float Initialisation::He(float previousLayerNodeCount)
+double Initialisation::He(float previousLayerNodeCount)
 {
 	return sqrt(2.0 / previousLayerNodeCount);
 }
 
-float Initialisation::Random(float upperBound, float lowerBound)
+double Initialisation::Random(float upperBound, float lowerBound)
 {
 	random_device device;
 	mt19937 random(device());
