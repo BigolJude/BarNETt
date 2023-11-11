@@ -21,10 +21,7 @@ double* Initialisation::Xavier(double previousLayerNodeCount, double nextLayerNo
 	return results;
 }
 
-double Initialisation::He(float previousLayerNodeCount)
-{
-	return sqrt(2.0 / previousLayerNodeCount);
-}
+double Initialisation::He(float previousLayerNodeCount) { return sqrt(2.0 / previousLayerNodeCount); }
 
 double Initialisation::Random(float upperBound, float lowerBound)
 {

@@ -47,7 +47,7 @@ void Neuron::weigh(list<double> inputs)
 	output = output + (1 * *weightsIt);
 
 	this->weight = output;
-	this->activationOutput = Activation::ReLu(this->weight);
+	this->activationOutput = Activation::LReLu(this->weight);
 }
 
 /// <summary>

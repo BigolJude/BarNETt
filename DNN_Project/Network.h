@@ -15,7 +15,7 @@ public:
 	void addLayer(int previousLayerCount, int neuronCount, string activation);
 	void traverseLayer(int layerCount, int weightIndex, double error);
 	double backpropogate(Neuron* neuron, double weight, double error);
-	void traverseNeuron(Layer layer, int weightIndex ,int layerCount, double error);
+	void traverseNeuron(Layer layer, int neuronIndex ,int layerCount, double error);
 	double getError();
 private:
 	list<Layer> layers;
@@ -23,5 +23,5 @@ private:
 	Layer getLayer(int index);
 	list<double> errors;
 	float learningRate;
-	double error;
+	double mError;
 };

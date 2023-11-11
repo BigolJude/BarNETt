@@ -6,6 +6,8 @@ using namespace std;
 
 double Activation::ReLu(double weight) { return (weight > 0) ? weight : 0; }
 
+double Activation::LReLu(double weight) { return (weight > 0) ? weight : 0.01 * weight; }
+
 list<double> Activation::SoftMax(list<double> weights)
 {
 	list<double>::iterator weightsIt = weights.begin();
