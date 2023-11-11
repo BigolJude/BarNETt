@@ -25,7 +25,7 @@ list<double> Activation::SoftMax(list<double> weights)
 
 	for (int i = 0; i < weights.size(); ++i)
 	{
-		float weight = exp(*weightsIt) / denominator;
+		double weight = exp(*weightsIt) / denominator;
 		outputs.push_back(weight);
 		advance(weightsIt, 1);
 	}

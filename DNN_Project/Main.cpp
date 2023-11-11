@@ -73,24 +73,28 @@ int main()
 	//	}
 	//}
 	
-	Neuron* neuron1 = new Neuron({ 0.5, 0.5 });
-	Neuron* neuron2 = new Neuron({ 0.5, 0.5, 0.5 });
-	list<Neuron*> neurons1 = { neuron1, neuron1 }; 
+	Neuron* neuron1 = new Neuron({ 0.3, 0.5 });
+	Neuron* neuron2 = new Neuron({ 0.5, 0.5 });
+	list<Neuron*> neurons1 = { neuron1}; 
 	list<Neuron*> neurons2 = { neuron2, neuron2 };
 	Layer* layer = new Layer(neurons1, "relu");
 	Layer* layer2 = new Layer(neurons2, "relu");
 	Network* network = new Network();
-	network->addLayer(*layer);
-	network->addLayer(*layer2);
+	network->addLayer(layer);
+	network->addLayer(layer2);
 
-	network->train({ 3 }, 0.5, { 1, 0 });
-
+	network->train({ 10 }, 0.5, { 1, 0 });
+	network->train({ 1 }, 0.5, { 0, 1 });
+	network->train({ 10 }, 0.5, { 1, 0 });
 
 	float crossEntropyTests = Loss::crossEntropy({ 0.775,0.116,00.39,0.07 }, { 1,0,0,0 });
 	cout << "loss: " << crossEntropyTests << endl;
 	cout << "finished!" << endl;
 	
+	delete(neuron1);
+	delete(neuron2);
 	delete(layer);
+	delete(layer2);
 	//delete(layer3);
 	//delete(layer4);
 	delete(network);
