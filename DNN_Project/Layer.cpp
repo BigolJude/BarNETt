@@ -1,5 +1,6 @@
 #include "Layer.h"
 #include <List>
+#include <iostream>
 using namespace std;
 
 Layer::Layer(int previousLayerCount, int neuronCount, string activation)
@@ -57,6 +58,7 @@ void Layer::weigh(list<double> inputs)
 
 	for (int i = 0; i < neurons.size(); ++i)
 	{
+		std::cout << " Neuron: " << i << endl;
 		neuronsIt._Ptr->_Myval->weigh(inputs);
 		advance(neuronsIt, 1);
 	}

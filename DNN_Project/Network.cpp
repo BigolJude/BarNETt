@@ -48,6 +48,7 @@ void Network::predict(list<double> inputs)
 
 	for (int i = 0; i < layers.size(); ++i)
 	{
+		cout << "Layer: " << i << endl;
 		layersIt->weigh(inputs);
 		inputs = layersIt->getActivationOutputs();
 		advance(layersIt, 1);
@@ -122,6 +123,7 @@ void Network::traverseLayer(int layerCount, int weightIndex, double error)
 		{
 			traverseNeuron(layer, i, layerCount, error);
 		}
+
 		neurons.clear();
 	}
 	else
@@ -140,17 +142,19 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 	{
 		double proportionalError = backpropogate(neuron, *weightsIt, error);
 		neuron->trainWeight(weightIndex, learningRate, proportionalError);
+
 		cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
-		cout <<	" Proportional Error: " << proportionalError << endl;
+		//cout <<	" Proportional Error: " << proportionalError << endl;
 
 		if (weightIndex < weights.size() - 1)
 		{
 			errors.push_front(proportionalError);
 			traverseLayer(layerCount + 1, weightIndex, error);
-			advance(weightsIt, 1);
 			errors.pop_front();
 		}
+		advance(weightsIt, 1);
 	}
+
 	neuron = nullptr;
 	delete(neuron);
 	weights.clear();

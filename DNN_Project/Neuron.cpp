@@ -39,12 +39,16 @@ void Neuron::weigh(list<double> inputs)
 	for (int i = 0; i < inputs.size(); ++i)
 	{
 		output = output + (*inputsIt * *weightsIt);
+		cout << "  " << i << "." << "Weight: " << *weightsIt << endl;
 		advance(weightsIt, 1);
 		advance(inputsIt, 1);
 	}
 
 	// Including the weighted bias.
 	output = output + (1 * *weightsIt);
+	cout << "Bias Weight: "<< *weightsIt << endl;
+	cout << "Output: " << output << endl;
+	cout << "-------" << endl;
 
 	this->weight = output;
 	this->activationOutput = Activation::LReLu(this->weight);
@@ -76,6 +80,8 @@ void Neuron::trainWeight(int weightIndex, float learningRate, double error)
 	list<double>::iterator weightsIt = weights.begin();
 	advance(weightsIt, weightIndex);
 	*weightsIt = *weightsIt - (learningRate * error);
+	cout << "Weight: " << *weightsIt << endl;
+	cout << "-------" << endl;
 	if (isnan(*weightsIt))
 	{
 

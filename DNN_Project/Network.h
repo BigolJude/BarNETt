@@ -19,6 +19,7 @@ public:
 	double getError();
 private:
 	list<Layer> layers;
+	list<Layer> tempLayers;
 	int getMax(list<double> predictions);
 	Layer getLayer(int index);
 	list<double> errors;
