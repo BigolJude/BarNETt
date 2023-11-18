@@ -3,18 +3,35 @@
 #include <iostream>
 using namespace std;
 
+/// <summary>
+/// Instantiates a new layer and generates the neurons.
+/// </summary>
+/// <param name="previousLayerCount"> - The neuron count of the previous layer (place input count here if first layer)</param>
+/// <param name="neuronCount"> - The intended amount of neurons for this layer.</param>
+/// <param name="activation"> - Currently a non functional label for clarity.</param>
 Layer::Layer(int previousLayerCount, int neuronCount, string activation)
 {
 	this->activation = activation;
 	this->generateNeurons(previousLayerCount, neuronCount);
 }
 
-Layer::Layer(list<Neuron*> neurons, string activation)
+/// <summary>
+/// Instantiates a new Layer with a list pre-set neurons.
+/// </summary>
+/// <param name="neurons"> - List of pointers to neurons to use within the layer.</param>
+/// <param name="activation"> - Currently a non functional label for clarity.</param>
+Layer::Layer(list<Neuron*> neurons, double biasWeight, string activation)
 {
-	this->activation = activation;
 	this->neurons = neurons;
+	this->biasWeight = biasWeight;
+	this->activation = activation;
 }
 
+/// <summary>
+/// Generates a set neurons.
+/// </summary>
+/// <param name="previousLayerCount"> - The neuron count of the previous layer (place input count here if first layer)</param>
+/// <param name="neuronCount"> - The intended amount of neurons for this layer.</param>
 void Layer::generateNeurons(int previousLayerCount,int neuronCount)
 {
 	for (int i = 0; i < neuronCount; ++i)
@@ -24,6 +41,10 @@ void Layer::generateNeurons(int previousLayerCount,int neuronCount)
 	}
 }
 
+/// <summary>
+/// Gets all of the weights (pre-activation) of each neuron in the layer.
+/// </summary>
+/// <returns></returns>
 list<double> Layer::getNeuronWeights()
 {
 	list<Neuron*>::iterator neuronsIt = neurons.begin();
@@ -39,6 +60,10 @@ list<double> Layer::getNeuronWeights()
 	return *weights;
 }
 
+/// <summary>
+/// Gets all of the activation outputs for each neuron in the layer
+/// </summary>
+/// <returns></returns>
 list<double> Layer::getActivationOutputs()
 {
 	list<Neuron*>::iterator neuronsIt = neurons.begin();
@@ -52,14 +77,18 @@ list<double> Layer::getActivationOutputs()
 	return *outputs;
 }
 
+/// <summary>
+/// Goes through every neuron and weighs them to the inputs.
+/// </summary>
+/// <param name="inputs"></param>
 void Layer::weigh(list<double> inputs)
 {
 	list<Neuron*>::iterator neuronsIt = neurons.begin();
 
 	for (int i = 0; i < neurons.size(); ++i)
 	{
-		std::cout << " Neuron: " << i << endl;
-		neuronsIt._Ptr->_Myval->weigh(inputs);
+		//std::cout << " Neuron: " << i << endl;
+		neuronsIt._Ptr->_Myval->weigh(inputs, this->biasWeight);
 		advance(neuronsIt, 1);
 	}
 }

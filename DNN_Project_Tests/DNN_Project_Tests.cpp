@@ -65,13 +65,12 @@ namespace DNNProjectTests
 		}
 		#pragma endregion
 
-
 		#pragma region Backpropogation
 		TEST_METHOD(Backpropogation_SingularNueron)
 		{
 			Neuron* neuron = new Neuron({0.5, 1.0});
 			list<Neuron*> neurons = { neuron };
-			Layer* layer = new Layer( neurons, "relu");
+			Layer* layer = new Layer( neurons, 0.5, "relu");
 			Network* network = new Network();
 			network->addLayer(*layer);
 			network->addLayer(*layer);

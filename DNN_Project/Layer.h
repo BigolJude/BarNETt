@@ -8,7 +8,7 @@ class Layer
 {
 public:
 	Layer(int previousLayerCount, int neuronCount, string activation);
-	Layer(list<Neuron*> neurons, string activation);
+	Layer(list<Neuron*> neurons, double biasWeight, string activation);
 	list<double> getNeuronWeights();
 	list<double> getActivationOutputs();
 	void weigh(list<double> inputs);
@@ -18,5 +18,6 @@ private:
 	void generateNeurons(int previousLayerCount, int neuronCount);
 	list<Neuron*> neurons;
 	string activation;
+	double biasWeight;
 };
 

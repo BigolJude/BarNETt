@@ -30,7 +30,7 @@ Neuron::Neuron(list<double> weights)
 /// <summary>
 /// Sets the sum of all weights in the Neuron in 'weights'. 
 /// </summary>
-void Neuron::weigh(list<double> inputs)
+void Neuron::weigh(list<double> inputs, double biasWeight)
 {
 	list<double>::iterator weightsIt = weights.begin();
 	list<double>::iterator inputsIt = inputs.begin();
@@ -39,16 +39,16 @@ void Neuron::weigh(list<double> inputs)
 	for (int i = 0; i < inputs.size(); ++i)
 	{
 		output = output + (*inputsIt * *weightsIt);
-		cout << "  " << i << "." << "Weight: " << *weightsIt << endl;
+		//cout << "  " << i << "." << "Weight: " << *weightsIt << endl;
 		advance(weightsIt, 1);
 		advance(inputsIt, 1);
 	}
 
 	// Including the weighted bias.
-	output = output + (1 * *weightsIt);
-	cout << "Bias Weight: "<< *weightsIt << endl;
-	cout << "Output: " << output << endl;
-	cout << "-------" << endl;
+	output = output + (1 * biasWeight);
+	//cout << "Bias Weight: "<< *weightsIt << endl;
+	//cout << "Output: " << output << endl;
+	//cout << "-------" << endl;
 
 	this->weight = output;
 	this->activationOutput = Activation::LReLu(this->weight);
@@ -65,9 +65,6 @@ void Neuron::populateWeights(int neuronCount)
 		double weightedNumber = Initialisation::Random(weightedRange, -weightedRange);
 		this->weights.push_back(weightedNumber);
 	}
-	//TODO implement bias this is not how it works.
-	double biasWeightedNumber = Initialisation::Random(weightedRange, -weightedRange);
-	this->weights.push_back(biasWeightedNumber);
 }
 
 /// <summary>
@@ -75,13 +72,14 @@ void Neuron::populateWeights(int neuronCount)
 /// </summary>
 /// <param name="learningRate"></param>
 /// <param name="error"></param>
-void Neuron::trainWeight(int weightIndex, float learningRate, double error)
+void Neuron::trainWeight(int weightIndex, float learningRate, double gradient)
 {	
+	//cout << "-------" << endl;
 	list<double>::iterator weightsIt = weights.begin();
 	advance(weightsIt, weightIndex);
-	*weightsIt = *weightsIt - (learningRate * error);
-	cout << "Weight: " << *weightsIt << endl;
-	cout << "-------" << endl;
+	//cout << "Weight before: " << *weightsIt << endl;
+	*weightsIt = *weightsIt - (learningRate * gradient);
+	//cout << "Weight after: " << *weightsIt << endl;
 	if (isnan(*weightsIt))
 	{
 

@@ -20,12 +20,20 @@ Network::Network()
 	this->mError = 1;
 }
 
+/// <summary>
+/// Trains the network given a valid set of inputs and valid set of outputs.
+/// </summary>
+/// <remarks>Current network is fixed to softmax.</remarks>
+/// <param name="inputs"> - list of inputs of the same sizes as first layer.</param>
+/// <param name="learningRate"> - The learning rate.</param>
+/// <param name="expected"> - list of expected values of the same size as the last layer.</param>
 void Network::train(list<double> inputs, float learningRate, list<double> expected)
 {
 	this->learningRate = learningRate;
 	this->predict(inputs);
 	list<double> predictions = Activation::SoftMax(this->getPrediction());
-	double error = Loss::crossEntropy(predictions, expected);
+	double loss = Loss::crossEntropy(predictions, expected);
+	outputNueronErrors = {};
 
 	list<double>::iterator predictionsIt = predictions.begin();
 	list<double>::iterator expectedIt = expected.begin();
@@ -33,12 +41,13 @@ void Network::train(list<double> inputs, float learningRate, list<double> expect
 	for (int i = 0; i < predictions.size(); ++i)
 	{
 		cout << *predictionsIt << " - " << *expectedIt << endl;
+		outputNueronErrors.push_back(*predictionsIt - *expectedIt);
 		advance(predictionsIt, 1);
 		advance(expectedIt, 1);
 	}
 
-	this->mError = error;
-	traverseLayer(0, 0, error);
+	this->mError = loss;
+	traverseLayer(0, 0, loss);
 	predictions.clear();
 }
 
@@ -48,7 +57,7 @@ void Network::predict(list<double> inputs)
 
 	for (int i = 0; i < layers.size(); ++i)
 	{
-		cout << "Layer: " << i << endl;
+		//cout << "Layer: " << i << endl;
 		layersIt->weigh(inputs);
 		inputs = layersIt->getActivationOutputs();
 		advance(layersIt, 1);
@@ -112,16 +121,19 @@ void Network::traverseLayer(int layerCount, int weightIndex, double error)
 		return;
 	}
 
-	Layer layer = this->getLayer((layers.size() - 1)- layerCount);
+	Layer layer = this->getLayer((layers.size() - 1) - layerCount);
 
 	// Traversing all values on the last layer.
 	if (layerCount == 0)
 	{
 		list<Neuron*> neurons = layer.getNeurons();
-
+		list<double>::iterator softmaxDerivationsIt = outputNueronErrors.begin();
 		for (int i = 0; i < neurons.size(); ++i)
 		{
+			errors.push_back(*softmaxDerivationsIt);
 			traverseNeuron(layer, i, layerCount, error);
+			errors.pop_back();
+			advance(softmaxDerivationsIt, 1);
 		}
 
 		neurons.clear();
@@ -140,18 +152,19 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 
 	for (int weightIndex = 0; weightIndex < weights.size(); ++weightIndex)
 	{
-		double proportionalError = backpropogate(neuron, *weightsIt, error);
-		neuron->trainWeight(weightIndex, learningRate, proportionalError);
+		double activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput());
+		errors.push_front(activationDerivative);
+		double gradient = backpropogate();
+		neuron->trainWeight(weightIndex, learningRate, gradient);
 
-		cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
-		//cout <<	" Proportional Error: " << proportionalError << endl;
+		//cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
+		//cout <<	" Proportional Error: " << gradient << endl;
 
 		if (weightIndex < weights.size() - 1)
 		{
-			errors.push_front(proportionalError);
 			traverseLayer(layerCount + 1, weightIndex, error);
-			errors.pop_front();
 		}
+		errors.pop_front();
 		advance(weightsIt, 1);
 	}
 
@@ -160,7 +173,7 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 	weights.clear();
 }
 
-double Network::backpropogate(Neuron* neuron, double weight, double error)
+double Network::backpropogate()
 {
 	list<double>::iterator errorsIt = errors.begin();
 	double weightedTotal = 1;
@@ -168,9 +181,9 @@ double Network::backpropogate(Neuron* neuron, double weight, double error)
 	{
 		weightedTotal = weightedTotal * *errorsIt;
 		advance(errorsIt, 1);
-		//cout << "Weighted Total:" << weightedTotal << endl;
 	}
-	return weightedTotal * weight * neuron->getActivationOutput() * error;
+
+	return weightedTotal;
 }
 
 Layer Network::getLayer(int index)
