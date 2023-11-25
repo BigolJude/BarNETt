@@ -7,7 +7,7 @@ using namespace std;
 class Layer
 {
 public:
-	Layer(int previousLayerCount, int neuronCount, string activation);
+	Layer(int previousLayerCount, int neuronCount, double biasWeight, string activation);
 	Layer(list<Neuron*> neurons, double biasWeight, string activation);
 	list<double> getNeuronWeights();
 	list<double> getActivationOutputs();

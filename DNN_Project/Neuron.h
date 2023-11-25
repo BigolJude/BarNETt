@@ -10,11 +10,12 @@ public:
 	void weigh(list<double> inputs, double biasWeight);
 	void trainWeight(int weightIndex, float learningRate, double gradient);
 	void setWeights(list<double> weights);
-	float getWeight();
+	double getOutput();
+	double getWeight(int weightIndex);
 	void printWeights();
 	list<double> getWeights();
 	void populateWeights(int neuronCount);
-	float getActivationOutput();
+	double getActivationOutput();
 private:
 	double weight;
 	double activationOutput;

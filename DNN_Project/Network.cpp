@@ -29,6 +29,7 @@ Network::Network()
 /// <param name="expected"> - list of expected values of the same size as the last layer.</param>
 void Network::train(list<double> inputs, float learningRate, list<double> expected)
 {
+	this->inputs = inputs;
 	this->learningRate = learningRate;
 	this->predict(inputs);
 	list<double> predictions = Activation::SoftMax(this->getPrediction());
@@ -85,9 +86,9 @@ void Network::addLayer(Layer layer)
 /// <param name="previousLayerCount"></param>
 /// <param name="neuronCount"></param>
 /// <param name="activation"></param>
-void Network::addLayer(int previousLayerCount, int neuronCount, string activation)
+void Network::addLayer(int previousLayerCount, int neuronCount, double biasWeight, string activation)
 {
-	Layer* layer = new Layer(previousLayerCount, neuronCount, activation);
+	Layer* layer = new Layer(previousLayerCount, neuronCount, biasWeight, activation);
 	layers.push_back(*layer);
 	delete(layer);
 }
@@ -127,13 +128,11 @@ void Network::traverseLayer(int layerCount, int weightIndex, double error)
 	if (layerCount == 0)
 	{
 		list<Neuron*> neurons = layer.getNeurons();
-		list<double>::iterator softmaxDerivationsIt = outputNueronErrors.begin();
+		list<double>::iterator outputNueronErrorsIt = outputNueronErrors.begin();
 		for (int i = 0; i < neurons.size(); ++i)
 		{
-			errors.push_back(*softmaxDerivationsIt);
-			traverseNeuron(layer, i, layerCount, error);
-			errors.pop_back();
-			advance(softmaxDerivationsIt, 1);
+			traverseNeuron(layer, i, layerCount, *outputNueronErrorsIt);
+			advance(outputNueronErrorsIt, 1);
 		}
 
 		neurons.clear();
@@ -152,15 +151,47 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 
 	for (int weightIndex = 0; weightIndex < weights.size(); ++weightIndex)
 	{
-		double activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput());
-		errors.push_front(activationDerivative);
-		double gradient = backpropogate();
-		neuron->trainWeight(weightIndex, learningRate, gradient);
+		double gradient;
+		double activationDerivative;
+		// TODO: Need to get the weight of the previous layers neuron to calculate the weights of the last layer's neurons.
+		if (layerCount == 0)
+		{
+			Layer layer = this->getLayer(layers.size() - 2);
+			Neuron* connectingNeuron = layer.getNeuron(neuronIndex);
 
-		//cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
-		//cout <<	" Proportional Error: " << gradient << endl;
+			double outputDerivative = error * connectingNeuron->getActivationOutput();
+			errors.push_front(outputDerivative);
+			gradient = this->backpropogate();
+			errors.pop_front();
+			neuron->trainWeight(weightIndex, learningRate, gradient);
 
-		if (weightIndex < weights.size() - 1)
+			activationDerivative = error * neuron->getWeight(weightIndex);
+			errors.push_front(activationDerivative);
+		}
+		else if (layerCount == layers.size() - 1)
+		{
+			list<double>::iterator inputsIt = inputs.begin();
+			advance(inputsIt, weightIndex);
+			Neuron* connectingNeuron = layer.getNeuron(neuronIndex);
+			activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput()) * *inputsIt;
+			errors.push_front(activationDerivative);
+			gradient = this->backpropogate();
+			neuron->trainWeight(weightIndex, learningRate, gradient);
+		}
+		else
+		{
+			Layer layer = this->getLayer((layers.size() - 2) - layerCount);
+			Neuron* connectingNeuron = layer.getNeuron(weightIndex);
+			activationDerivative = neuron->getActivationOutput()* (1 - neuron->getActivationOutput());
+			errors.push_front(activationDerivative);
+			gradient = this->backpropogate();
+			neuron->trainWeight(weightIndex, learningRate, gradient);
+		}
+
+		cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
+		cout <<	"Gradient: " << gradient << endl;
+
+		if (weightIndex < weights.size())
 		{
 			traverseLayer(layerCount + 1, weightIndex, error);
 		}
@@ -179,10 +210,11 @@ double Network::backpropogate()
 	double weightedTotal = 1;
 	for (int i = 0; i < errors.size(); ++i)
 	{
+		cout << "dervivative: " << *errorsIt << endl;
 		weightedTotal = weightedTotal * *errorsIt;
 		advance(errorsIt, 1);
 	}
-
+	cout << "------" << endl;
 	return weightedTotal;
 }
 

@@ -45,7 +45,7 @@ void Neuron::weigh(list<double> inputs, double biasWeight)
 	}
 
 	// Including the weighted bias.
-	output = output + (1 * biasWeight);
+	//output = output + (1 * biasWeight);
 	//cout << "Bias Weight: "<< *weightsIt << endl;
 	//cout << "Output: " << output << endl;
 	//cout << "-------" << endl;
@@ -78,11 +78,11 @@ void Neuron::trainWeight(int weightIndex, float learningRate, double gradient)
 	list<double>::iterator weightsIt = weights.begin();
 	advance(weightsIt, weightIndex);
 	//cout << "Weight before: " << *weightsIt << endl;
-	*weightsIt = *weightsIt - (learningRate * gradient);
+	*weightsIt = *weightsIt - learningRate * gradient;
 	//cout << "Weight after: " << *weightsIt << endl;
 	if (isnan(*weightsIt))
 	{
-
+		//Breakpoint
 	}
 }
 
@@ -100,12 +100,19 @@ void Neuron::printWeights()
 	}
 }
 
-float Neuron::getWeight()
+double Neuron::getWeight(int weightIndex)
+{
+	list<double>::iterator weightsIt = weights.begin();
+	advance(weightsIt, weightIndex);
+	return *weightsIt;
+}
+
+double Neuron::getOutput()
 {
 	return this->weight;
 }
 
-float Neuron::getActivationOutput()
+double Neuron::getActivationOutput()
 {
 	return this->activationOutput;
 }

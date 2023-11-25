@@ -9,8 +9,9 @@ using namespace std;
 /// <param name="previousLayerCount"> - The neuron count of the previous layer (place input count here if first layer)</param>
 /// <param name="neuronCount"> - The intended amount of neurons for this layer.</param>
 /// <param name="activation"> - Currently a non functional label for clarity.</param>
-Layer::Layer(int previousLayerCount, int neuronCount, string activation)
+Layer::Layer(int previousLayerCount, int neuronCount, double biasWeight, string activation)
 {
+	this->biasWeight = biasWeight;
 	this->activation = activation;
 	this->generateNeurons(previousLayerCount, neuronCount);
 }
@@ -52,7 +53,7 @@ list<double> Layer::getNeuronWeights()
 
 	for (int i = 0; i < neurons.size(); ++i)
 	{
-		double weight = neuronsIt._Ptr->_Myval->getWeight();
+		double weight = neuronsIt._Ptr->_Myval->getOutput();
 
 		weights->push_back(weight);
 		advance(neuronsIt, 1);
