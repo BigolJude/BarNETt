@@ -46,7 +46,7 @@ void Network::train(list<double> inputs, float learningRate, list<double> expect
 		advance(predictionsIt, 1);
 		advance(expectedIt, 1);
 	}
-
+	cout << "----" << endl;
 	this->mError = loss;
 	traverseLayer(0, 0, loss);
 	predictions.clear();
@@ -172,9 +172,11 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 		{
 			list<double>::iterator inputsIt = inputs.begin();
 			advance(inputsIt, weightIndex);
-			Neuron* connectingNeuron = layer.getNeuron(neuronIndex);
-			activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput()) * *inputsIt;
+
+			activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput());
+			activationDerivative = activationDerivative * *inputsIt;
 			errors.push_front(activationDerivative);
+
 			gradient = this->backpropogate();
 			neuron->trainWeight(weightIndex, learningRate, gradient);
 		}
@@ -182,7 +184,8 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 		{
 			Layer layer = this->getLayer((layers.size() - 2) - layerCount);
 			Neuron* connectingNeuron = layer.getNeuron(weightIndex);
-			activationDerivative = neuron->getActivationOutput()* (1 - neuron->getActivationOutput());
+			activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput());
+			activationDerivative = activationDerivative * connectingNeuron->getActivationOutput();
 			errors.push_front(activationDerivative);
 			gradient = this->backpropogate();
 			neuron->trainWeight(weightIndex, learningRate, gradient);
@@ -190,6 +193,7 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 
 		cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
 		cout <<	"Gradient: " << gradient << endl;
+		cout << "--------" << endl;
 
 		if (weightIndex < weights.size())
 		{
@@ -200,7 +204,6 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 	}
 
 	neuron = nullptr;
-	delete(neuron);
 	weights.clear();
 }
 
@@ -210,11 +213,11 @@ double Network::backpropogate()
 	double weightedTotal = 1;
 	for (int i = 0; i < errors.size(); ++i)
 	{
-		cout << "dervivative: " << *errorsIt << endl;
+		//cout << "dervivative: " << *errorsIt << endl;
 		weightedTotal = weightedTotal * *errorsIt;
 		advance(errorsIt, 1);
 	}
-	cout << "------" << endl;
+	//cout << "------" << endl;
 	return weightedTotal;
 }
 

@@ -82,18 +82,21 @@ int main()
 	Neuron* neuron2 = new Neuron({ 0.3, 0.4 });
 	Neuron* neuron3 = new Neuron({ 0.5, 0.6 });
 	Neuron* neuron4 = new Neuron({ 0.7, 0.8 });
-	Neuron* neuron5 = new Neuron({ 0.5, 0.1 });
-	Neuron* neuron6 = new Neuron({ 0.25, 0.1 });
+	//Neuron* neuron5 = new Neuron({ 0.5, 0.1 });
+	//Neuron* neuron6 = new Neuron({ 0.25, 0.1 });
 
 
 	list<Neuron*> neurons1 = { neuron1, neuron2 }; 
 	list<Neuron*> neurons2 = { neuron3, neuron4 };
+	//list<Neuron*> neurons3 = { neuron5, neuron6 };
 	Layer* layer1 = new Layer(neurons1, 0.5, "relu");
 	Layer* layer2 = new Layer(neurons2, 0.5, "relu");
+	//Layer* layer3 = new Layer(neurons3, 0.5, "relu");
 	
 	Network* network = new Network();
 	network->addLayer(*layer1);
 	network->addLayer(*layer2);
+	//network->addLayer(*layer3);
 	
 	double averageError = 1;
 	while(averageError > 0.2333)
