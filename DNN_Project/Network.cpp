@@ -41,12 +41,12 @@ void Network::train(list<double> inputs, float learningRate, list<double> expect
 
 	for (int i = 0; i < predictions.size(); ++i)
 	{
-		cout << *predictionsIt << " - " << *expectedIt << endl;
+		//cout << *predictionsIt << " - " << *expectedIt << endl;
 		outputNueronErrors.push_back(*predictionsIt - *expectedIt);
 		advance(predictionsIt, 1);
 		advance(expectedIt, 1);
 	}
-	cout << "----" << endl;
+	//cout << "----" << endl;
 	this->mError = loss;
 	traverseLayer(0, 0, loss);
 	predictions.clear();
@@ -175,7 +175,7 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 
 			activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput());
 			activationDerivative = activationDerivative * *inputsIt;
-			errors.push_front(activationDerivative);
+			errors.push_front(activationDerivative * neuron->getWeight(weightIndex));
 
 			gradient = this->backpropogate();
 			neuron->trainWeight(weightIndex, learningRate, gradient);
@@ -184,16 +184,18 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 		{
 			Layer layer = this->getLayer((layers.size() - 2) - layerCount);
 			Neuron* connectingNeuron = layer.getNeuron(weightIndex);
+
 			activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput());
 			activationDerivative = activationDerivative * connectingNeuron->getActivationOutput();
-			errors.push_front(activationDerivative);
+			errors.push_front(activationDerivative * neuron->getWeight(weightIndex));
+
 			gradient = this->backpropogate();
 			neuron->trainWeight(weightIndex, learningRate, gradient);
 		}
 
-		cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
-		cout <<	"Gradient: " << gradient << endl;
-		cout << "--------" << endl;
+		//cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
+		//cout <<	"Gradient: " << gradient << endl;
+		//cout << "--------" << endl;
 
 		if (weightIndex < weights.size())
 		{
