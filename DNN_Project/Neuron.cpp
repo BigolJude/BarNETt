@@ -106,7 +106,7 @@ double Neuron::getWeight(int weightIndex)
 
 double Neuron::getOutput()
 {
-	return this->weight;
+	return this->output;
 }
 
 double Neuron::getActivationOutput()
