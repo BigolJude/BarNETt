@@ -8,7 +8,7 @@
 #include <iostream>
 using namespace std;
 
-//BarNett
+//BarNETt
 Network::Network(list<Layer> layers)
 {
 	this->layers = layers;
@@ -52,6 +52,10 @@ void Network::train(list<double> inputs, float learningRate, list<double> expect
 	predictions.clear();
 }
 
+/// <summary>
+/// Weighs all of the neurons in the network.
+/// </summary>
+/// <param name="inputs"></param>
 void Network::predict(list<double> inputs)
 {
 	list<Layer>::iterator layersIt = layers.begin();
@@ -65,6 +69,10 @@ void Network::predict(list<double> inputs)
 	}
 }
 
+/// <summary>
+/// Gets the last layers activations, hence the 'prediction'.
+/// </summary>
+/// <returns></returns>
 list<double> Network::getPrediction()
 {
 	Layer outputLayer = layers.back();
@@ -111,7 +119,7 @@ int Network::getMax(list<double> numbers)
 }
 
 /// <summary>
-/// 
+/// Recursively traverses to the next neuron in the pre-order network traversal.
 /// </summary>
 /// <param name="layerCount"></param>
 /// <param name="weightIndex"></param>
@@ -143,6 +151,13 @@ void Network::traverseLayer(int layerCount, int weightIndex, double error)
 	}
 }
 
+/// <summary>
+/// Recursively traverses each weight, calculates the delta, and traverses to the next layer if applicable.
+/// </summary>
+/// <param name="layer"></param>
+/// <param name="neuronIndex"></param>
+/// <param name="layerCount"></param>
+/// <param name="error"></param>
 void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, double error)
 {
 	Neuron* neuron = layer.getNeuron(neuronIndex);
@@ -209,6 +224,10 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 	weights.clear();
 }
 
+/// <summary>
+/// Multiplies each delta together and returns the output.
+/// </summary>
+/// <returns></returns>
 double Network::backpropogate()
 {
 	list<double>::iterator errorsIt = errors.begin();

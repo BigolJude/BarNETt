@@ -81,7 +81,7 @@ list<double> Layer::getActivationOutputs()
 /// <summary>
 /// Goes through every neuron and weighs them to the inputs.
 /// </summary>
-/// <param name="inputs"></param>
+/// <param name="inputs"> - the inputs for the neurons to weigh.</param>
 void Layer::weigh(list<double> inputs)
 {
 	list<Neuron*>::iterator neuronsIt = neurons.begin();
@@ -94,6 +94,11 @@ void Layer::weigh(list<double> inputs)
 	}
 }
 
+/// <summary>
+/// Gets the pointer of a nueron within the layer given it's index.
+/// </summary>
+/// <param name="index"> - The index of the neuron.</param>
+/// <returns>The ptr to a neuron.</returns>
 Neuron* Layer::getNeuron(int index)
 {
 	list<Neuron*>::iterator neuronIt = neurons.begin();
@@ -101,6 +106,10 @@ Neuron* Layer::getNeuron(int index)
 	return *neuronIt;
 }
 
+/// <summary>
+/// Gets all of the pointers to neurons within a layer.
+/// </summary>
+/// <returns>A list of pointers to neurons.</returns>
 list<Neuron*> Layer::getNeurons()
 {
 	return this->neurons;
