@@ -78,10 +78,10 @@ int main()
 	//	cout << averageLoss / 10 << endl;
 	//}
 
-	Neuron* neuron1 = new Neuron({ 0.1, 0.2 });
-	Neuron* neuron2 = new Neuron({ 0.3, 0.4 });
-	Neuron* neuron3 = new Neuron({ 0.5, 0.6 });
-	Neuron* neuron4 = new Neuron({ 0.7, 0.8 });
+	Neuron* neuron1 = new Neuron({ 0.1, 0.2, 0.5 });
+	Neuron* neuron2 = new Neuron({ 0.3, 0.4, 0.5 });
+	Neuron* neuron3 = new Neuron({ 0.5, 0.6, 0.5 });
+	Neuron* neuron4 = new Neuron({ 0.7, 0.8, 0.5 });
 	//Neuron* neuron5 = new Neuron({ 0.5, 0.1 });
 	//Neuron* neuron6 = new Neuron({ 0.25, 0.1 });
 
@@ -89,8 +89,8 @@ int main()
 	list<Neuron*> neurons1 = { neuron1, neuron2 }; 
 	list<Neuron*> neurons2 = { neuron3, neuron4 };
 	//list<Neuron*> neurons3 = { neuron5, neuron6 };
-	Layer* layer1 = new Layer(neurons1, 0.5, "relu");
-	Layer* layer2 = new Layer(neurons2, 0.5, "relu");
+	Layer* layer1 = new Layer(neurons1, "relu");
+	Layer* layer2 = new Layer(neurons2, "relu");
 	//Layer* layer3 = new Layer(neurons3, 0.5, "relu");
 	
 	Network* network = new Network();
@@ -101,24 +101,25 @@ int main()
 	double averageError = 1;
 	while(averageError > 0.2333)
 	{
-		network->train({ 5, 1 }, 0.1, { 0, 1 });
+		averageError = 0;
+		network->train({ 5, 1 }, 0.005, { 0, 1 });
 		averageError += network->getError();
-		network->train({ 1, 5 }, 0.1, { 1, 0 });
+		network->train({ 1, 5 }, 0.005, { 1, 0 });
 		averageError += network->getError();
-		network->train({ 5, 1 }, 0.1, { 0, 1 });
+		network->train({ 5, 1 }, 0.005, { 0, 1 });
 		averageError += network->getError();
-		network->train({ 1, 5 }, 0.1, { 1, 0 });
+		network->train({ 1, 5 }, 0.005, { 1, 0 });
 		averageError = (averageError + network->getError()) / 4;
 		cout << "Loss: " << averageError << endl;
 	}
-	network->predict({ 5, 1 });
+	network->predict({ 1, 5 });
 	
 	list<double> predictions = Activation::SoftMax(network->getPrediction());
 	list<double>::iterator predictionsIt = predictions.begin();
 	
 	float crossEntropyTests = Loss::crossEntropy({ 0.775,0.116,00.39,0.07 }, { 1,0,0,0 });
-	cout << "loss: " << crossEntropyTests << endl;
-	cout << "finished!" << endl;
+	//cout << "loss: " << crossEntropyTests << endl;
+	//cout << "finished!" << endl;
 	
 	delete(neuron1);
 	delete(neuron2);

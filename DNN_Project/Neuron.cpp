@@ -30,7 +30,7 @@ Neuron::Neuron(list<double> weights)
 /// <summary>
 /// Sets the sum of all weights in the Neuron in 'weights'. 
 /// </summary>
-void Neuron::weigh(list<double> inputs, double biasWeight)
+void Neuron::weigh(list<double> inputs)
 {
 	list<double>::iterator weightsIt = weights.begin();
 	list<double>::iterator inputsIt = inputs.begin();
@@ -45,13 +45,13 @@ void Neuron::weigh(list<double> inputs, double biasWeight)
 	}
 
 	// Including the weighted bias.
-	//output = output + (1 * biasWeight);
+	output = output + (1 * *weightsIt);
 	//cout << "Bias Weight: "<< *weightsIt << endl;
 	//cout << "Output: " << output << endl;
 	//cout << "-------" << endl;
 
-	this->weight = output;
-	this->activationOutput = Activation::LReLu(this->weight);
+	this->output = output;
+	this->activationOutput = Activation::LReLu(this->output);
 }
 
 /// <summary>
@@ -65,6 +65,7 @@ void Neuron::populateWeights(int neuronCount)
 		double weightedNumber = Initialisation::Random(weightedRange, -weightedRange);
 		this->weights.push_back(weightedNumber);
 	}
+	this->weights.push_back(Initialisation::Random(weightedRange, -weightedRange));
 }
 
 /// <summary>
@@ -79,11 +80,7 @@ void Neuron::trainWeight(int weightIndex, float learningRate, double gradient)
 	advance(weightsIt, weightIndex);
 	cout << "Weight before: " << *weightsIt << endl;
 	*weightsIt = *weightsIt - learningRate * gradient;
-	cout << "Weight after: " << *weightsIt << endl;
-	if (isnan(*weightsIt))
-	{
-		//Breakpoint
-	}
+	//cout << "Weight after: " << *weightsIt << endl;
 }
 
 /// <summary>

@@ -86,9 +86,9 @@ void Network::addLayer(Layer layer)
 /// <param name="previousLayerCount"></param>
 /// <param name="neuronCount"></param>
 /// <param name="activation"></param>
-void Network::addLayer(int previousLayerCount, int neuronCount, double biasWeight, string activation)
+void Network::addLayer(int previousLayerCount, int neuronCount, string activation)
 {
-	Layer* layer = new Layer(previousLayerCount, neuronCount, biasWeight, activation);
+	Layer* layer = new Layer(previousLayerCount, neuronCount, activation);
 	layers.push_back(*layer);
 	delete(layer);
 }
@@ -152,9 +152,16 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 	for (int weightIndex = 0; weightIndex < weights.size(); ++weightIndex)
 	{
 		double gradient;
-		double activationDerivative;
+		double activationDerivative = 0;
 		// TODO: Need to get the weight of the previous layers neuron to calculate the weights of the last layer's neurons.
-		if (layerCount == 0)
+		if (weightIndex == weights.size() - 1)
+		{
+			activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput());
+			errors.push_front(activationDerivative);
+			gradient = this->backpropogate();
+			neuron->trainWeight(weightIndex, learningRate, gradient);
+		}
+		else if (layerCount == 0)
 		{
 			Layer layer = this->getLayer(layers.size() - 2);
 			Neuron* connectingNeuron = layer.getNeuron(neuronIndex);
@@ -187,6 +194,7 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 			activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput());
 			activationDerivative = activationDerivative * connectingNeuron->getActivationOutput();
 			errors.push_front(activationDerivative);
+
 			gradient = this->backpropogate();
 			neuron->trainWeight(weightIndex, learningRate, gradient);
 		}
@@ -195,7 +203,7 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 		cout <<	"Gradient: " << gradient << endl;
 		cout << "--------" << endl;
 
-		if (weightIndex < weights.size())
+		if (weightIndex < weights.size() - 1)
 		{
 			traverseLayer(layerCount + 1, weightIndex, error);
 		}
