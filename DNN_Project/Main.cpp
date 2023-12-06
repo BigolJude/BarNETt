@@ -102,13 +102,13 @@ int main()
 	while(averageError > 0.2333)
 	{
 		averageError = 0;
-		network->train({ 5, 1 }, 0.005, { 0, 1 });
+		network->train({ 1, 5 }, 0.0001, { 1, 0 });
 		averageError += network->getError();
-		network->train({ 1, 5 }, 0.005, { 1, 0 });
+		network->train({ 5, 1 }, 0.0001, { 0, 1 });
 		averageError += network->getError();
-		network->train({ 5, 1 }, 0.005, { 0, 1 });
+		network->train({ 1, 5 }, 0.0001, { 1, 0 });
 		averageError += network->getError();
-		network->train({ 1, 5 }, 0.005, { 1, 0 });
+		network->train({ 5, 1 }, 0.0001, { 0, 1 });
 		averageError = (averageError + network->getError()) / 4;
 		cout << "Loss: " << averageError << endl;
 	}

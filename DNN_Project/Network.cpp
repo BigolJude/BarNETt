@@ -170,10 +170,10 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 			errors.push_front(outputDerivative);
 			gradient = this->backpropogate();
 			errors.pop_front();
-			neuron->trainWeight(weightIndex, learningRate, gradient);
-
 			activationDerivative = error * neuron->getWeight(weightIndex);
 			errors.push_front(activationDerivative);
+
+			neuron->trainWeight(weightIndex, learningRate, gradient);
 		}
 		else if (layerCount == layers.size() - 1)
 		{
@@ -185,17 +185,23 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 			errors.push_front(activationDerivative);
 
 			gradient = this->backpropogate();
+			errors.pop_front();
+
+			errors.push_front(activationDerivative * neuron->getWeight(weightIndex));
 			neuron->trainWeight(weightIndex, learningRate, gradient);
 		}
 		else
 		{
 			Layer layer = this->getLayer((layers.size() - 2) - layerCount);
 			Neuron* connectingNeuron = layer.getNeuron(weightIndex);
+
 			activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput());
 			activationDerivative = activationDerivative * connectingNeuron->getActivationOutput();
 			errors.push_front(activationDerivative);
-
 			gradient = this->backpropogate();
+			errors.pop_front();
+
+			errors.push_front(activationDerivative * neuron->getWeight(weightIndex));
 			neuron->trainWeight(weightIndex, learningRate, gradient);
 		}
 
