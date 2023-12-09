@@ -121,7 +121,8 @@ As for the backpropagation, while functionally and theoretically the algorithm w
 
 - **The derivatives are being calculated either wrong or inaccurately.** While the unit tests currently covering networks that are of 2 layers, of which have 2 neurons each, are returning values that are expected (or are near to expected due to floating point inaccuracies); with layers 3 or more the accuracy of the backpropagation begins to decline. 
 
-![[Pasted image 20231207134733.png]]
+![Pasted image 20231207134733](https://github.com/BigolJude/DNN_Project/assets/74246561/ba908e2d-864c-4c8e-af62-89089cb2ec0e)
+
 In this case a 2 by 2 network has been created with set weights and a forward and backwards pass has been completed (forward for all neurons and backwards for the two top neurons) after passing in the same value given similar values were returned in the backwards pass (similar again because of floating point inaccuracies) 
 
 - **Bias corrections needed**. The github is currently split with `master` and `ai-1` branches. `ai-1` has the bias weights and values enabled and `master` has them disabled, this is due to a problem with exploding gradients and loss not declining. In `ai-1`, if a network of two possible outputs is given the network will always favour the first inputs given. However in `master`, without the bias, the weights seemingly work fine and loss declines to an optimal point. (The optimal point in this case being the natural point when the loss 'levels out'). Until corrections can be made to the bias, the two branches will remain separate. 
