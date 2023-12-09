@@ -4,10 +4,25 @@
 #include <iostream>
 using namespace std;
 
+/// <summary>
+/// Standard relu activation.
+/// </summary>
+/// <param name="weight">The dot product of all the weights</param>
+/// <returns>0 if the value is below 0 and the value if the value is above.</returns>
 double Activation::ReLu(double weight) { return (weight > 0) ? weight : 0; }
 
+/// <summary>
+/// Leaky relu activation based of off research <research here>
+/// </summary>
+/// <param name="weight"></param>
+/// <returns></returns>
 double Activation::LReLu(double weight) { return (weight > 0) ? weight : 0.01 * weight; }
 
+/// <summary>
+/// Standard softmax activation.
+/// </summary>
+/// <param name="weights"></param>
+/// <returns></returns>
 list<double> Activation::SoftMax(list<double> weights)
 {
 	list<double>::iterator weightsIt = weights.begin();
@@ -33,6 +48,11 @@ list<double> Activation::SoftMax(list<double> weights)
 	return outputs;
 }
 
+/// <summary>
+/// Standard step activation.
+/// </summary>
+/// <param name="weight"></param>
+/// <returns></returns>
 double Activation::Step(double weight)
 {
 	return static_cast<double>(weight > 0);

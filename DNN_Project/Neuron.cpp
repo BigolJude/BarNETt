@@ -100,6 +100,11 @@ void Neuron::printWeights()
 	}
 }
 
+/// <summary>
+/// Gets a specific weight given it's index.
+/// </summary>
+/// <param name="weightIndex"></param>
+/// <returns></returns>
 double Neuron::getWeight(int weightIndex)
 {
 	list<double>::iterator weightsIt = weights.begin();
@@ -107,21 +112,37 @@ double Neuron::getWeight(int weightIndex)
 	return *weightsIt;
 }
 
+/// <summary>
+/// Gets the output of the neuron before activation.
+/// </summary>
+/// <returns>The output of the neuron before activation.</returns>
 double Neuron::getOutput()
 {
 	return this->weight;
 }
 
+/// <summary>
+/// Gets the output of the neuron after activation.
+/// </summary>
+/// <returns>The output of the neuron after activation.</returns>
 double Neuron::getActivationOutput()
 {
 	return this->activationOutput;
 }
 
+/// <summary>
+/// Gets all of the weights within the neuron.
+/// </summary>
+/// <returns></returns>
 list<double> Neuron::getWeights()
 {
 	return this->weights;
 }
 
+/// <summary>
+/// Sets all of the weights within the neuron.
+/// </summary>
+/// <param name="weights"></param>
 void Neuron::setWeights(list<double> weights)
 {
 	this->weights = weights;
