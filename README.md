@@ -21,8 +21,8 @@ The entire model is contained within a `Network` class. This class contains the 
 
 - To predict inputs in the model we call the `Predict` function of class `Network` and pass in just the inputs. 
 	- example: `Network->Predict({5, 0});`
- 	- the predicitions then can be obtained using `Network->getPredictions()` which will return a list of predictions.
-  	- the predictions are only the outputs of the last layer **not** the values returned from softmax this network model requires seperate softmax calculations.	 	 
+ 	- the predicitions then can be obtained using `Network->getPredictions()` which will return a list.
+  	- the predictions are only the outputs of the last layer **not** the values returned from softmax. Softmax can be run after on these values. 	 
 # How it works:
 
 ### Background:
