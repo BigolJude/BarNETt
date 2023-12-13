@@ -12,6 +12,7 @@
 #include "Activation.h"
 #include "Network.h"
 #include "CSV.h"
+#include "ExampleNetworks.h"
 using namespace std;
 
 int main()
@@ -23,17 +24,9 @@ int main()
 	mt19937 generator(randomDevice());
 	shuffle(valuesVector.begin(), valuesVector.end(), generator);
 	
-	cout << "finished" << endl;
+	Network* irisNetwork = ExampleNetworks::irisDatasetNetwork();
 	
-	Layer* layer1 = new Layer(4, 4, 0.5, "relu");
-	Layer* layer2 = new Layer(4, 3, 0.5, "relu");
-	
-	Network* network = new Network();
-	
-	network->addLayer(*layer1);
-	network->addLayer(*layer2);
-	
-	for(int epochs = 0; epochs < 10; ++epochs)
+	for(int epochs = 0; epochs < 40; ++epochs)
 	{
 		double averageLoss = 0;		
 		vector<list<double>>::iterator valuesIt = valuesVector.begin();
@@ -60,9 +53,9 @@ int main()
 	
 			inputs.pop_back();
 	
-			network->train(inputs, 0.0001, expected);
+			irisNetwork->train(inputs, 0.0001, expected);
 	
-			averageLoss = averageLoss + network->getError();
+			averageLoss = averageLoss + irisNetwork->getError();
 	
 			inputs.clear();
 			expected.clear();
@@ -71,69 +64,4 @@ int main()
 		}
 		cout << averageLoss / values.size() << endl;
 	}
-
-	//Neuron* neuron1 = new Neuron({ 0.1, 0.2 });
-	//Neuron* neuron2 = new Neuron({ 0.3, 0.4 });
-	//Neuron* neuron3 = new Neuron({ 0.5, 0.6 });
-	//Neuron* neuron4 = new Neuron({ 0.7, 0.8 });	
-	//
-	//list<Neuron*> neurons1 = { neuron1, neuron2 }; 
-	//list<Neuron*> neurons2 = { neuron3, neuron4 };
-	//Layer* layer1 = new Layer(neurons1, 0.5, "relu");
-	//Layer* layer2 = new Layer(neurons2, 0.5, "relu");
-	//
-	//Network* network = new Network();
-	//network->addLayer(*layer1);
-	//network->addLayer(*layer2);
-	//
-	//double averageError = 1;
-	//double learningRate = 1;
-	//while(averageError > 0.30 || isnan(averageError))
-	//{
-    //    if (isnan(averageError))
-	//	{
-	//		neuron1 = new Neuron({ 0.1, 0.2 });
-	//		neuron2 = new Neuron({ 0.3, 0.4 });
-	//		neuron3 = new Neuron({ 0.5, 0.6 });
-	//		neuron4 = new Neuron({ 0.4, 0.4 });
-	//
-	//		neurons1 = { neuron1, neuron2 };
-	//		neurons2 = { neuron3, neuron4 };
-	//
-	//		layer1 = new Layer(neurons1, 0.5, "relu");
-	//		layer2 = new Layer(neurons2, 0.5, "relu");
-	//
-	//		network = new Network();
-	//		network->addLayer(*layer1);
-	//		network->addLayer(*layer2);
-	//		learningRate -= 0.04;
-	//
-	//		cout << "learningRate: " << learningRate << endl;
-	//	}
-	//
-	//	averageError = 0;
-	//	network->train({ 5, 1 }, learningRate, { 0, 1 });
-	//	averageError += network->getError();
-	//
-	//	network->train({ 1, 5 }, learningRate, { 1, 0 });
-	//	averageError += network->getError();
-	//
-	//	network->train({ 5, 1 }, learningRate, { 0, 1 });		
-	//	averageError += network->getError();
-	//
-	//	network->train({ 1, 5 }, learningRate, { 1, 0 });
-	//	averageError += network->getError();
-	//
-	//	averageError = averageError / 4;
-	//	cout << "Loss: " << averageError << endl;
-	//}
-	//network->predict({ 5, 1 });
-	//
-	//list<double> predictions = Activation::SoftMax(network->getPrediction());
-	//list<double>::iterator predictionsIt = predictions.begin();
-	
-	delete(layer1);
-	delete(layer2);
-
-	delete(network);
 }

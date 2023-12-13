@@ -168,8 +168,11 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 	{
 		double gradient;
 		double activationDerivative;
+
 		if (layerCount == 0)
 		{
+			// Training output layer neuron weights.
+
 			Layer layer = this->getLayer(layers.size() - 2);
 			Neuron* connectingNeuron = layer.getNeuron(neuronIndex);
 
@@ -183,7 +186,9 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 			errors.push_front(activationDerivative);
 		}
 		else if (layerCount == layers.size() - 1)
-		{
+		{	
+			// Training input layer neuron weights.
+
 			list<double>::iterator inputsIt = inputs.begin();
 			advance(inputsIt, weightIndex);
 
@@ -196,6 +201,8 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 		}
 		else
 		{
+			// Training hidden layer neuron weights.
+
 			Layer layer = this->getLayer((layers.size() - 2) - layerCount);
 			Neuron* connectingNeuron = layer.getNeuron(weightIndex);
 
@@ -233,11 +240,9 @@ double Network::backpropogate()
 	double weightedTotal = 1;
 	for (int i = 0; i < errors.size(); ++i)
 	{
-		//cout << "dervivative: " << *errorsIt << endl;
 		weightedTotal = weightedTotal * *errorsIt;
 		advance(errorsIt, 1);
 	}
-	//cout << "------" << endl;
 	return weightedTotal;
 }
 
