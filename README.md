@@ -112,6 +112,9 @@ Link: https://github.com/BigolJude/DNN_Project/blob/master/DNN_Project/CSV.cpp
 
 The CSV class is a helper method to import datasets into the system. Currently this class only has one function and the function is fixed to import one dataset. The Iris dataset by `(SachGarg, n.d.)`
 
+#### Example Networks
+The `ExampleNetworks` has three seperate examples of how to build networks within the DNN_Project. One of these examples is used for the iris dataset.
+
 # Current Performance and expected improvements.
 
 Functionally, the forward propagation is complete and working as intended. This can be shown through unit tests. In addition each activation, loss, and initialisation also have unit tests and are functioning correctly. 
