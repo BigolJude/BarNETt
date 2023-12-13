@@ -33,15 +33,21 @@ The documentation will only be covering the main functionality of the network an
 All objects within the network can be initialised granularly, as in, the neuron, layer and network can be initialised with weights, including bias, pre-set. This helps with testing networks as a whole without having randomised initialisations of the weights.
 ## Neuron
 
+Link: https://github.com/BigolJude/DNN_Project/blob/master/DNN_Project/Neuron.cpp
+
 The neuron in the system contains a list of weights, a total computed weight, and the activated output of the neuron. The neuron's responsibility is to only calculate it's own activation output and train it's own weights given a gradient. 
 
 Being the first part of the network that was designed the training algorithm originally did not take a gradient but the error.  As this was only calculating a single perceptron the "error" in this case would be changed to a gradient calculated outside of the neuron object via backpropagation and the chain rule.
 ## Layer
 
+Link: https://github.com/BigolJude/DNN_Project/blob/master/DNN_Project/Layer.cpp
+
 The layer simply contains a list of pointers to different neurons. The list needs to be of pointers because of the the backpropagation will be at the network level, this will give the ability to read and write the instances of the neuron objects. 
 
 On the forward pass the layer iterates through the neuron pointers within it's neuron list and calculates the activation of each neuron. The Activation of each neuron is then retrieved and passed back as a list of doubles as the next set of inputs to give to the next layer.
 ## Network
+
+Link: https://github.com/BigolJude/DNN_Project/blob/master/DNN_Project/Network.cpp
 
 The network, as expected, has the most responsibility over all of it's components. It contains the top level functions for: training (forwards and backward passes), weighing (forward pass) and adding and removing of layers. 
 
@@ -76,6 +82,8 @@ Each gradient and weight calculated by the network are multiplied before being a
 The **initialisation**, **loss**, **activation**, and **CSV** static classes were created to separate the concerns of the functionality and help readability. Within each of these classes there is a set of functions used in the networks. They can be called individually to help unit test them and give the potential opportunity to add and remove other methods without inherently damaging the methods within the network.
 #### Initialisation
 
+Link: https://github.com/BigolJude/DNN_Project/blob/master/DNN_Project/Initialisation.cpp
+
 Initialisation aids in setting the starting points for each weight within the network. Currently the implemented methods are **HE** and **Xavier** initialisation with an additional function `Random` to give a random number between two given double values.
 
 - **He**   
@@ -83,6 +91,8 @@ Initialisation aids in setting the starting points for each weight within the ne
 
 Both functions, takes the previous layer neuron count and uses that in the current layers starting weights. Translated from a python implementation `Brownlee, J. (2021, February 2)`
 #### Loss
+
+Link: https://github.com/BigolJude/DNN_Project/blob/master/DNN_Project/Loss.cpp
 
 Loss aids in discovering the overall error of a network given certain inputs. Currently implemented method is **Cross-Entropy** .
 
@@ -98,6 +108,8 @@ Activations currently implemented are:
 - **Softmax** - Function returning a list of probabilities with the sum equating to one. Mainly translated from python `(Brownlee, 2020)`
 #### CSV
 
+Link: https://github.com/BigolJude/DNN_Project/blob/master/DNN_Project/CSV.cpp
+
 The CSV class is a helper method to import datasets into the system. Currently this class only has one function and the function is fixed to import one dataset. The Iris dataset by `(SachGarg, n.d.)`
 
 # Current Performance and expected improvements.
@@ -109,7 +121,8 @@ As for the backpropagation, while functionally and theoretically the algorithm w
 
 - **The derivatives are being calculated either wrong or inaccurately.** While the unit tests currently covering networks that are of 2 layers, of which have 2 neurons each, are returning values that are expected (or are near to expected due to floating point inaccuracies); with layers 3 or more the accuracy of the backpropagation begins to decline. 
 
-![[Pasted image 20231207134733.png]]
+![Pasted image 20231207134733](https://github.com/BigolJude/DNN_Project/assets/74246561/ba908e2d-864c-4c8e-af62-89089cb2ec0e)
+
 In this case a 2 by 2 network has been created with set weights and a forward and backwards pass has been completed (forward for all neurons and backwards for the two top neurons) after passing in the same value given similar values were returned in the backwards pass (similar again because of floating point inaccuracies) 
 
 - **Bias corrections needed**. The github is currently split with `master` and `ai-1` branches. `ai-1` has the bias weights and values enabled and `master` has them disabled, this is due to a problem with exploding gradients and loss not declining. In `ai-1`, if a network of two possible outputs is given the network will always favour the first inputs given. However in `master`, without the bias, the weights seemingly work fine and loss declines to an optimal point. (The optimal point in this case being the natural point when the loss 'levels out'). Until corrections can be made to the bias, the two branches will remain separate. 
@@ -118,7 +131,9 @@ In this case a 2 by 2 network has been created with set weights and a forward an
 
 - **The architecture of the network** the network is a non-vectorised (linear) network. This means on the backpropagation the network calculates the deltas while traversing the network adding or removing the delta calculations from a list one by one. There are draw-backs and benefits to this: the draw backs being that the network will be much slower because it's calculating each value individually rather than using vectors. The benefits is that the networks will theoretically use much less memory, due to not storing the values when they are not in use.
 
-- **Potential Issues with the dataset** the iris dataset `(SachGarg, n.d.)` could potentially be causing a loss of accuracy. The dataset even on established neural networks will only be accurate to a certain point. After using the dataset with Tensor Flow and Keras the max accuracy with the network was only slightly above 60%. [Run a small test with the Iris DataSet and attempt to get the highest accuracy]
+- **Potential Issues with the dataset** the iris dataset `(SachGarg, n.d.)` could potentially be causing a loss of accuracy. The dataset even on established neural networks will only be accurate to a certain point. After using the dataset with Tensor Flow and Keras the max accuracy with the network was only slightly above 44% on initial run with 40 epochs: ![image](https://github.com/BigolJude/DNN_Project/assets/74246561/d726346a-1a87-49b3-b23e-ed45ad0faec1).
+It should be noted although the Dataset comes from different places the Scikit-learn and the dataset from `(SachGarg, n.d.)` are the same. 
+ 
 # References
 
 1. Maas, A., Hannun, A., & Ng, A. (n.d.). _Rectifier Nonlinearities Improve Neural Network Acoustic Models_. http://ai.stanford.edu/~amaas/papers/relu_hybrid_icml2013_final.pdf
