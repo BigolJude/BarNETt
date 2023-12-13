@@ -33,7 +33,7 @@ int main()
 	network->addLayer(*layer1);
 	network->addLayer(*layer2);
 	
-	for(int epochs = 0; epochs < 1000; ++epochs)
+	for(int epochs = 0; epochs < 10; ++epochs)
 	{
 		double averageLoss = 0;		
 		vector<list<double>>::iterator valuesIt = valuesVector.begin();
@@ -60,7 +60,7 @@ int main()
 	
 			inputs.pop_back();
 	
-			network->train(inputs, 0.00001, expected);
+			network->train(inputs, 0.0001, expected);
 	
 			averageLoss = averageLoss + network->getError();
 	

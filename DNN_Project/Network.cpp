@@ -41,7 +41,7 @@ void Network::train(list<double> inputs, float learningRate, list<double> expect
 
 	for (int i = 0; i < predictions.size(); ++i)
 	{
-		//cout << *predictionsIt << " - " << *expectedIt << endl;
+		cout << *predictionsIt << " - " << *expectedIt << endl;
 		outputNueronErrors.push_back(*predictionsIt - *expectedIt);
 		advance(predictionsIt, 1);
 		advance(expectedIt, 1);
@@ -168,7 +168,6 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 	{
 		double gradient;
 		double activationDerivative;
-		// TODO: Need to get the weight of the previous layers neuron to calculate the weights of the last layer's neurons.
 		if (layerCount == 0)
 		{
 			Layer layer = this->getLayer(layers.size() - 2);
@@ -208,9 +207,9 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 			neuron->trainWeight(weightIndex, learningRate, gradient);
 		}
 
-		//cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
-		//cout <<	"Gradient: " << gradient << endl;
-		//cout << "--------" << endl;
+		cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
+		cout <<	"Gradient: " << gradient << endl;
+		cout << "--------" << endl;
 
 		if (weightIndex < weights.size())
 		{

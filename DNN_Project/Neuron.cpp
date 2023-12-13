@@ -74,12 +74,12 @@ void Neuron::populateWeights(int neuronCount)
 /// <param name="error"></param>
 void Neuron::trainWeight(int weightIndex, float learningRate, double gradient)
 {	
-	//cout << "-------" << endl;
+	cout << "-------" << endl;
 	list<double>::iterator weightsIt = weights.begin();
 	advance(weightsIt, weightIndex);
-	//cout << "Weight before: " << *weightsIt << endl;
+	cout << "Weight before: " << *weightsIt << endl;
 	*weightsIt = *weightsIt - learningRate * gradient;
-	//cout << "Weight after: " << *weightsIt << endl;
+	cout << "Weight after: " << *weightsIt << endl;
 	if (isnan(*weightsIt))
 	{
 		//Breakpoint
