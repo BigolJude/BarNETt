@@ -131,7 +131,9 @@ In this case a 2 by 2 network has been created with set weights and a forward an
 
 - **The architecture of the network** the network is a non-vectorised (linear) network. This means on the backpropagation the network calculates the deltas while traversing the network adding or removing the delta calculations from a list one by one. There are draw-backs and benefits to this: the draw backs being that the network will be much slower because it's calculating each value individually rather than using vectors. The benefits is that the networks will theoretically use much less memory, due to not storing the values when they are not in use.
 
-- **Potential Issues with the dataset** the iris dataset `(SachGarg, n.d.)` could potentially be causing a loss of accuracy. The dataset even on established neural networks will only be accurate to a certain point. After using the dataset with Tensor Flow and Keras the max accuracy with the network was only slightly above 60%. [Run a small test with the Iris DataSet and attempt to get the highest accuracy]
+- **Potential Issues with the dataset** the iris dataset `(SachGarg, n.d.)` could potentially be causing a loss of accuracy. The dataset even on established neural networks will only be accurate to a certain point. After using the dataset with Tensor Flow and Keras the max accuracy with the network was only slightly above 44% on initial run with 40 epochs: ![image](https://github.com/BigolJude/DNN_Project/assets/74246561/d726346a-1a87-49b3-b23e-ed45ad0faec1).
+It should be noted although the Dataset comes from different places the Scikit-learn and the dataset from `(SachGarg, n.d.)` are the same. 
+ 
 # References
 
 1. Maas, A., Hannun, A., & Ng, A. (n.d.). _Rectifier Nonlinearities Improve Neural Network Acoustic Models_. http://ai.stanford.edu/~amaas/papers/relu_hybrid_icml2013_final.pdf
