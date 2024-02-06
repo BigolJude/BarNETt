@@ -61,8 +61,43 @@ namespace DNNProjectTests
 		#pragma region Loss
 		TEST_METHOD(Loss_CrossEntropy)
 		{
-
+			double value = Loss::crossEntropy({ 0.5, 0.5 }, { 1, 0 });
+			Assert::AreEqual(value, 0.69314718055994529);
 		}
+		#pragma endregion
+
+		#pragma region Forward_Pass
+		TEST_METHOD(Forward_Pass)
+		{
+			list<double> weights1{ 0.1 };
+			list<double> weights2{ 0.2 };
+
+			Neuron* neuron1 = new Neuron(weights1);
+			Neuron* neuron2 = new Neuron(weights2);
+			Neuron* neuron3 = new Neuron({ 0.3, 0.4 });
+			Neuron* neuron4 = new Neuron({ 0.5, 0.6 });
+
+			list<Neuron*> neurons1{ neuron1, neuron2 };
+			list<Neuron*> neurons2{ neuron3, neuron4 };
+
+			Layer* layer1 = new Layer(neurons1, 0.5, "LReLu" );
+			Layer* layer2 = new Layer(neurons2, 0.5, "LReLu" );
+			Network* network = new Network();
+
+			network->addLayer(*layer1);
+			network->addLayer(*layer2);
+
+			network->predict({ 4 });
+
+			list<double> outputs = layer2->getActivationOutputs();
+			list<double>::iterator outputsIt = outputs.begin();
+
+			Assert::AreEqual(ceil((*outputsIt*100))/100, ceil(0.44*100)/100);
+
+			advance(outputsIt, 1);
+			Assert::AreEqual(ceil(*outputsIt * 100) / 100, ceil(0.69 * 100) / 100);
+		}
+
 		#pragma endregion
 
 		#pragma region Backpropogation
