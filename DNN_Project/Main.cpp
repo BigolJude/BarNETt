@@ -14,6 +14,17 @@
 #include "CSV.h"
 using namespace std;
 
+// Memory leak debugging
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
+
 int main()
 {
 	list<list<double>> values = CSV::read("..\\DNN_Project\\Dataset\\iris.csv");
@@ -25,13 +36,13 @@ int main()
 	
 	cout << "finished" << endl;
 	
-	Layer* layer1 = new Layer(4, 4, 0.5, "relu");
-	Layer* layer2 = new Layer(4, 3, 0.5, "relu");
+	Layer layer1 = Layer(4, 4, "relu");
+	Layer layer2 = Layer(4, 3, "relu");
 	
 	Network* network = new Network();
 	
-	network->addLayer(*layer1);
-	network->addLayer(*layer2);
+	network->addLayer(layer1);
+	network->addLayer(layer2);
 	
 	for(int epochs = 0; epochs < 10; ++epochs)
 	{
@@ -60,7 +71,7 @@ int main()
 	
 			inputs.pop_back();
 	
-			network->train(inputs, 0.0001, expected);
+			network->train(inputs, 0.00001, expected);
 	
 			averageLoss = averageLoss + network->getError();
 	
@@ -71,69 +82,11 @@ int main()
 		}
 		cout << averageLoss / values.size() << endl;
 	}
-
-	//Neuron* neuron1 = new Neuron({ 0.1, 0.2 });
-	//Neuron* neuron2 = new Neuron({ 0.3, 0.4 });
-	//Neuron* neuron3 = new Neuron({ 0.5, 0.6 });
-	//Neuron* neuron4 = new Neuron({ 0.7, 0.8 });	
-	//
-	//list<Neuron*> neurons1 = { neuron1, neuron2 }; 
-	//list<Neuron*> neurons2 = { neuron3, neuron4 };
-	//Layer* layer1 = new Layer(neurons1, 0.5, "relu");
-	//Layer* layer2 = new Layer(neurons2, 0.5, "relu");
-	//
-	//Network* network = new Network();
-	//network->addLayer(*layer1);
-	//network->addLayer(*layer2);
-	//
-	//double averageError = 1;
-	//double learningRate = 1;
-	//while(averageError > 0.30 || isnan(averageError))
-	//{
-    //    if (isnan(averageError))
-	//	{
-	//		neuron1 = new Neuron({ 0.1, 0.2 });
-	//		neuron2 = new Neuron({ 0.3, 0.4 });
-	//		neuron3 = new Neuron({ 0.5, 0.6 });
-	//		neuron4 = new Neuron({ 0.4, 0.4 });
-	//
-	//		neurons1 = { neuron1, neuron2 };
-	//		neurons2 = { neuron3, neuron4 };
-	//
-	//		layer1 = new Layer(neurons1, 0.5, "relu");
-	//		layer2 = new Layer(neurons2, 0.5, "relu");
-	//
-	//		network = new Network();
-	//		network->addLayer(*layer1);
-	//		network->addLayer(*layer2);
-	//		learningRate -= 0.04;
-	//
-	//		cout << "learningRate: " << learningRate << endl;
-	//	}
-	//
-	//	averageError = 0;
-	//	network->train({ 5, 1 }, learningRate, { 0, 1 });
-	//	averageError += network->getError();
-	//
-	//	network->train({ 1, 5 }, learningRate, { 1, 0 });
-	//	averageError += network->getError();
-	//
-	//	network->train({ 5, 1 }, learningRate, { 0, 1 });		
-	//	averageError += network->getError();
-	//
-	//	network->train({ 1, 5 }, learningRate, { 1, 0 });
-	//	averageError += network->getError();
-	//
-	//	averageError = averageError / 4;
-	//	cout << "Loss: " << averageError << endl;
-	//}
-	//network->predict({ 5, 1 });
-	//
-	//list<double> predictions = Activation::SoftMax(network->getPrediction());
-	//list<double>::iterator predictionsIt = predictions.begin();
 	
-	delete(layer1);
-	delete(layer2);
-
+	values.clear();
+	valuesVector.clear();
 	delete(network);
+
+	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+	_CrtDumpMemoryLeaks();
 }

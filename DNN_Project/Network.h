@@ -8,6 +8,7 @@ class Network
 public:
 	Network(list<Layer> layers);
 	Network();
+	~Network();
 	void train(list<double> inputs, float learningRate, list<double>expected);
 	void predict(list<double> inputs);
 	list<double> getPrediction();

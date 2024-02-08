@@ -1,3 +1,13 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
+
 #include "Neuron.h"
 #include "Initialisation.h"
 #include "Activation.h"
@@ -75,10 +85,10 @@ void Neuron::populateWeights(int neuronCount)
 /// <param name="error"></param>
 void Neuron::trainWeight(int weightIndex, float learningRate, double gradient)
 {	
-	cout << "-------" << endl;
+	//cout << "-------" << endl;
 	list<double>::iterator weightsIt = weights.begin();
 	advance(weightsIt, weightIndex);
-	cout << "Weight before: " << *weightsIt << endl;
+	//cout << "Weight before: " << *weightsIt << endl;
 	*weightsIt = *weightsIt - learningRate * gradient;
 	//cout << "Weight after: " << *weightsIt << endl;
 }

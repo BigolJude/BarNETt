@@ -1,3 +1,13 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
+
 #include "Network.h"
 #include "Layer.h"
 #include "Activation.h"
@@ -18,6 +28,26 @@ Network::Network(list<Layer> layers)
 Network::Network()
 {
 	this->mError = 1;
+}
+
+Network::~Network()
+{
+	list<Layer>::iterator layersIt = layers.begin();
+
+	for (int i = 0; i < layers.size(); ++i)
+	{
+		list<Neuron*> neurons = layersIt->getNeurons();
+		list<Neuron*>::iterator neuronsIt = neurons.begin();
+		for (int ii = 0; ii < neurons.size(); ++ii)
+		{
+			delete(*neuronsIt);
+			*neuronsIt = nullptr;
+			advance(neuronsIt, 1);
+		}
+		advance(layersIt, 1);
+		neurons.clear();
+	}
+	layers.clear();
 }
 
 /// <summary>
@@ -41,7 +71,7 @@ void Network::train(list<double> inputs, float learningRate, list<double> expect
 
 	for (int i = 0; i < predictions.size(); ++i)
 	{
-		cout << *predictionsIt << " - " << *expectedIt << endl;
+		//cout << *predictionsIt << " - " << *expectedIt << endl;
 		outputNueronErrors.push_back(*predictionsIt - *expectedIt);
 		advance(predictionsIt, 1);
 		advance(expectedIt, 1);
@@ -222,10 +252,10 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 		}
 
 		cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
-		cout <<	"Gradient: " << gradient << endl;
-		cout << "--------" << endl;
+		//cout <<	"Gradient: " << gradient << endl;
+		//cout << "--------" << endl;
 
-		if (weightIndex < weights.size())
+		if (weightIndex < weights.size() - 1)
 		{
 			traverseLayer(layerCount + 1, weightIndex, error);
 		}
@@ -247,11 +277,11 @@ double Network::backpropogate()
 	double weightedTotal = 1;
 	for (int i = 0; i < errors.size(); ++i)
 	{
-		//cout << "dervivative: " << *errorsIt << endl;
+		//cout << "derivative: " << *errorsIt << endl;
 		weightedTotal = weightedTotal * *errorsIt;
 		advance(errorsIt, 1);
 	}
-	//cout << "------" << endl;
+	cout << "------" << endl;
 	return weightedTotal;
 }
 

@@ -1,3 +1,13 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
+
 #include "Layer.h"
 #include <List>
 #include <iostream>
@@ -66,14 +76,14 @@ list<double> Layer::getNeuronWeights()
 list<double> Layer::getActivationOutputs()
 {
 	list<Neuron*>::iterator neuronsIt = neurons.begin();
-	list<double>* outputs = new list<double>();
+	list<double> outputs = list<double>();
 
 	for (int i = 0; i < neurons.size(); ++i)
 	{
-		outputs->push_back(neuronsIt._Ptr->_Myval->getActivationOutput());
+		outputs.push_back(neuronsIt._Ptr->_Myval->getActivationOutput());
 		advance(neuronsIt, 1);
 	}
-	return *outputs;
+	return outputs;
 }
 
 /// <summary>

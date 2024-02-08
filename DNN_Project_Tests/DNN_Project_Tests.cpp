@@ -1,3 +1,13 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
+
 #include <math.h>
 #include "pch.h"
 #include "CppUnitTest.h"
@@ -80,8 +90,8 @@ namespace DNNProjectTests
 			list<Neuron*> neurons1{ neuron1, neuron2 };
 			list<Neuron*> neurons2{ neuron3, neuron4 };
 
-			Layer* layer1 = new Layer(neurons1, 0.5, "LReLu" );
-			Layer* layer2 = new Layer(neurons2, 0.5, "LReLu" );
+			Layer* layer1 = new Layer(neurons1, "LReLu" );
+			Layer* layer2 = new Layer(neurons2, "LReLu" );
 			Network* network = new Network();
 
 			network->addLayer(*layer1);
