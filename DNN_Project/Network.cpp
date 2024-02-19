@@ -198,9 +198,9 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 	{
 		double gradient;
 		double activationDerivative = 0;
-		// TODO: Need to get the weight of the previous layers neuron to calculate the weights of the last layer's neurons.
 		if (weightIndex == weights.size() - 1)
 		{
+			// Bias weight.
 			activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput());
 			errors.push_front(activationDerivative);
 			gradient = this->backpropogate();
@@ -208,35 +208,33 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 		}
 		else if (layerCount == 0)
 		{
+			// Last layer
 			Layer layer = this->getLayer(layers.size() - 2);
-			Neuron* connectingNeuron = layer.getNeuron(neuronIndex);
+			Neuron* connectingNeuron = layer.getNeuron(weightIndex);
 
 			double outputDerivative = error * connectingNeuron->getActivationOutput();
-			errors.push_front(outputDerivative);
-			gradient = this->backpropogate();
-			errors.pop_front();
 			activationDerivative = error * neuron->getWeight(weightIndex);
 			errors.push_front(activationDerivative);
 
-			neuron->trainWeight(weightIndex, learningRate, gradient);
+			neuron->trainWeight(weightIndex, learningRate, outputDerivative);
 		}
 		else if (layerCount == layers.size() - 1)
 		{
+			// First Layer
 			list<double>::iterator inputsIt = inputs.begin();
 			advance(inputsIt, weightIndex);
 
 			activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput());
 			activationDerivative = activationDerivative * *inputsIt;
-			errors.push_front(activationDerivative * neuron->getWeight(weightIndex));
-
+			errors.push_front(activationDerivative);
 			gradient = this->backpropogate();
-			errors.pop_front();
+			//cout << gradient << endl;
 
-			errors.push_front(activationDerivative * neuron->getWeight(weightIndex));
 			neuron->trainWeight(weightIndex, learningRate, gradient);
 		}
 		else
 		{
+			// Middle Layer
 			Layer layer = this->getLayer((layers.size() - 2) - layerCount);
 			Neuron* connectingNeuron = layer.getNeuron(weightIndex);
 
@@ -251,7 +249,7 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 			neuron->trainWeight(weightIndex, learningRate, gradient);
 		}
 
-		cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
+		//cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
 		//cout <<	"Gradient: " << gradient << endl;
 		//cout << "--------" << endl;
 
@@ -281,7 +279,7 @@ double Network::backpropogate()
 		weightedTotal = weightedTotal * *errorsIt;
 		advance(errorsIt, 1);
 	}
-	cout << "------" << endl;
+	//cout << "------" << endl;
 	return weightedTotal;
 }
 

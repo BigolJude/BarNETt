@@ -18,6 +18,5 @@ private:
 	void generateNeurons(int previousLayerCount, int neuronCount);
 	list<Neuron*> neurons;
 	string activation;
-	double biasWeight;
 };
 

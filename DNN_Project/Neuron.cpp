@@ -89,7 +89,7 @@ void Neuron::trainWeight(int weightIndex, float learningRate, double gradient)
 	list<double>::iterator weightsIt = weights.begin();
 	advance(weightsIt, weightIndex);
 	//cout << "Weight before: " << *weightsIt << endl;
-	*weightsIt = *weightsIt - learningRate * gradient;
+	*weightsIt = *weightsIt - (learningRate * gradient);
 	//cout << "Weight after: " << *weightsIt << endl;
 }
 
