@@ -1,3 +1,13 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
+
 #include <math.h>
 #include "pch.h"
 #include "CppUnitTest.h"
@@ -80,8 +90,8 @@ namespace DNNProjectTests
 			list<Neuron*> neurons1{ neuron1, neuron2 };
 			list<Neuron*> neurons2{ neuron3, neuron4 };
 
-			Layer* layer1 = new Layer(neurons1, 0.5, "LReLu" );
-			Layer* layer2 = new Layer(neurons2, 0.5, "LReLu" );
+			Layer* layer1 = new Layer(neurons1, "LReLu" );
+			Layer* layer2 = new Layer(neurons2, "LReLu" );
 			Network* network = new Network();
 
 			network->addLayer(*layer1);
@@ -101,18 +111,118 @@ namespace DNNProjectTests
 		#pragma endregion
 
 		#pragma region Backpropogation
-		TEST_METHOD(Backpropogation_SingularNueron)
+		TEST_METHOD(Backpropogation_2x2Network)
 		{
-			Neuron* neuron = new Neuron({0.5, 1.0});
-			list<Neuron*> neurons = { neuron };
-			Layer* layer = new Layer( neurons, 0.5, "relu");
+			list<double> weights;
+			list<double> weights2;
+			Neuron* neuron = new Neuron({0.1, 0.5});
+			Neuron* neuron2 = new Neuron({0.2, 0.5});
+			Neuron* neuron3 = new Neuron({ 0.5, 0.6, 0.5});
+			Neuron* neuron4 = new Neuron({ 0.7, 0.8, 0.5});
+			list<Neuron*> neurons = { neuron, neuron2 };
+			list<Neuron*> neurons2 = { neuron3, neuron4 };
+			Layer* layer = new Layer(neurons, "relu");
+			Layer* layer2 = new Layer(neurons2, "relu");
 			Network* network = new Network();
 			network->addLayer(*layer);
-			network->addLayer(*layer);
-			network->traverseLayer(0, 0, 1);
+			network->addLayer(*layer2);
+
+			network->train({ 0.4 }, 0.5, { 1, 0 });
+			list<double> weightsAfter = neuron->getWeights();
+			list<double> weightsAfter2 = neuron2->getWeights();
+			list<double> weightsAfter3 = neuron3->getWeights();
+			list<double> weightsAfter4 = neuron4->getWeights();
+			
+		}
+
+		TEST_METHOD(NeuralNetwork_TwoLayers)
+		{
+			Neuron* neuron1 = new Neuron({ 0.1, 0.2, 0.5 });
+			Neuron* neuron2 = new Neuron({ 0.3, 0.4, 0.5 });
+			Neuron* neuron3 = new Neuron({ 0.5, 0.6, 0.5 });
+			Neuron* neuron4 = new Neuron({ 0.7, 0.8, 0.5 });
+
+			list<Neuron*> neurons1 = { neuron1, neuron2 };
+			list<Neuron*> neurons2 = { neuron3, neuron4 };
+
+			Layer* layer1 = new Layer(neurons1, "relu");
+			Layer* layer2 = new Layer(neurons2, "relu");
+
+			Network* network = new Network();
+			network->addLayer(*layer1);
+			network->addLayer(*layer2);
+
+			double averageError = 1;
+			while (averageError > 0.2333)
+			{
+				averageError = 0;
+				network->train({ 5, 1 }, 0.001, { 0, 1 });
+				averageError += network->getError();
+				network->train({ 1, 5 }, 0.001, { 1, 0 });
+				averageError += network->getError();
+				network->train({ 5, 1 }, 0.001, { 0, 1 });
+				averageError += network->getError();
+				network->train({ 1, 5 }, 0.001, { 1, 0 });
+				averageError = (averageError + network->getError()) / 4;
+			}
+			network->predict({ 1, 5 });
+
+			list<double> predictions = Activation::SoftMax(network->getPrediction());
+			list<double>::iterator predictionsIt = predictions.begin();
+
+			double prediction1 = *predictionsIt;
+			advance(predictionsIt, 1);
+			double prediction2 = *predictionsIt;
+			
+			Assert::IsTrue(prediction1 > prediction2);
+		}
+
+		TEST_METHOD(NeuralNetwork_ThreeLayers)
+		{
+			Neuron* neuron1 = new Neuron({ 0.1, 0.2 });
+			Neuron* neuron2 = new Neuron({ 0.3, 0.4 });
+			Neuron* neuron3 = new Neuron({ 0.5, 0.6 });
+			Neuron* neuron4 = new Neuron({ 0.7, 0.8 });
+			Neuron* neuron5 = new Neuron({ 0.5, 0.4 });
+			Neuron* neuron6 = new Neuron({ 0.3, 0.2 });
+
+			list<Neuron*> neurons1 = { neuron1, neuron2 };
+			list<Neuron*> neurons2 = { neuron3, neuron4 };
+			list<Neuron*> neurons3 = { neuron5, neuron6 };
+
+			Layer* layer1 = new Layer(neurons1, "relu");
+			Layer* layer2 = new Layer(neurons2, "relu");
+			Layer* layer3 = new Layer(neurons3, "relu");
+
+			Network* network = new Network();
+			network->addLayer(*layer1);
+			network->addLayer(*layer2);
+			network->addLayer(*layer3);
+
+			double averageError = 1;
+			while (averageError > 0.5)
+			{
+				network->train({ 5, 1 }, 0.25, { 0, 1 });
+				averageError += network->getError();
+				network->train({ 1, 5 }, 0.25, { 1, 0 });
+				averageError += network->getError();
+				network->train({ 5, 1 }, 0.25, { 0, 1 });
+				averageError += network->getError();
+				network->train({ 1, 5 }, 0.25, { 1, 0 });
+				averageError = (averageError + network->getError()) / 4;
+			}
+			network->predict({ 1, 5 });
+
+			list<double> predictions = Activation::SoftMax(network->getPrediction());
+			list<double>::iterator predictionsIt = predictions.begin();
+
+			double prediction1 = *predictionsIt;
+			advance(predictionsIt, 1);
+			double prediction2 = *predictionsIt;
+
+			Assert::IsTrue(prediction1 > prediction2);
 		}
 		#pragma endregion
-
 
 	private:
 

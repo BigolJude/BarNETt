@@ -7,7 +7,7 @@ class Neuron
 public:
 	Neuron(int inputs);
 	Neuron(list<double> weights);
-	void weigh(list<double> inputs, double biasWeight);
+	void weigh(list<double> inputs);
 	void trainWeight(int weightIndex, float learningRate, double gradient);
 	void setWeights(list<double> weights);
 	double getOutput();
@@ -17,7 +17,7 @@ public:
 	void populateWeights(int neuronCount);
 	double getActivationOutput();
 private:
-	double weight;
+	double output;
 	double activationOutput;
 	list<double> weights;
 };

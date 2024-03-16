@@ -1,3 +1,13 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
+
 #include "Layer.h"
 #include <List>
 #include <iostream>
@@ -9,9 +19,8 @@ using namespace std;
 /// <param name="previousLayerCount"> - The neuron count of the previous layer (place input count here if first layer)</param>
 /// <param name="neuronCount"> - The intended amount of neurons for this layer.</param>
 /// <param name="activation"> - Currently a non functional label for clarity.</param>
-Layer::Layer(int previousLayerCount, int neuronCount, double biasWeight, string activation)
+Layer::Layer(int previousLayerCount, int neuronCount, string activation)
 {
-	this->biasWeight = biasWeight;
 	this->activation = activation;
 	this->generateNeurons(previousLayerCount, neuronCount);
 }
@@ -21,10 +30,9 @@ Layer::Layer(int previousLayerCount, int neuronCount, double biasWeight, string 
 /// </summary>
 /// <param name="neurons"> - List of pointers to neurons to use within the layer.</param>
 /// <param name="activation"> - Currently a non functional label for clarity.</param>
-Layer::Layer(list<Neuron*> neurons, double biasWeight, string activation)
+Layer::Layer(list<Neuron*> neurons, string activation)
 {
 	this->neurons = neurons;
-	this->biasWeight = biasWeight;
 	this->activation = activation;
 }
 
@@ -68,14 +76,14 @@ list<double> Layer::getNeuronWeights()
 list<double> Layer::getActivationOutputs()
 {
 	list<Neuron*>::iterator neuronsIt = neurons.begin();
-	list<double>* outputs = new list<double>();
+	list<double> outputs = list<double>();
 
 	for (int i = 0; i < neurons.size(); ++i)
 	{
-		outputs->push_back(neuronsIt._Ptr->_Myval->getActivationOutput());
+		outputs.push_back(neuronsIt._Ptr->_Myval->getActivationOutput());
 		advance(neuronsIt, 1);
 	}
-	return *outputs;
+	return outputs;
 }
 
 /// <summary>
@@ -89,7 +97,7 @@ void Layer::weigh(list<double> inputs)
 	for (int i = 0; i < neurons.size(); ++i)
 	{
 		//std::cout << " Neuron: " << i << endl;
-		neuronsIt._Ptr->_Myval->weigh(inputs, this->biasWeight);
+		neuronsIt._Ptr->_Myval->weigh(inputs);
 		advance(neuronsIt, 1);
 	}
 }

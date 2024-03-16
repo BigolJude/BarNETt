@@ -1,3 +1,13 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
+
 #include "Network.h"
 #include "Layer.h"
 #include "Activation.h"
@@ -18,6 +28,26 @@ Network::Network(list<Layer> layers)
 Network::Network()
 {
 	this->mError = 1;
+}
+
+Network::~Network()
+{
+	list<Layer>::iterator layersIt = layers.begin();
+
+	for (int i = 0; i < layers.size(); ++i)
+	{
+		list<Neuron*> neurons = layersIt->getNeurons();
+		list<Neuron*>::iterator neuronsIt = neurons.begin();
+		for (int ii = 0; ii < neurons.size(); ++ii)
+		{
+			delete(*neuronsIt);
+			*neuronsIt = nullptr;
+			advance(neuronsIt, 1);
+		}
+		advance(layersIt, 1);
+		neurons.clear();
+	}
+	layers.clear();
 }
 
 /// <summary>
@@ -41,7 +71,7 @@ void Network::train(list<double> inputs, float learningRate, list<double> expect
 
 	for (int i = 0; i < predictions.size(); ++i)
 	{
-		cout << *predictionsIt << " - " << *expectedIt << endl;
+		//cout << *predictionsIt << " - " << *expectedIt << endl;
 		outputNueronErrors.push_back(*predictionsIt - *expectedIt);
 		advance(predictionsIt, 1);
 		advance(expectedIt, 1);
@@ -94,9 +124,9 @@ void Network::addLayer(Layer layer)
 /// <param name="previousLayerCount"></param>
 /// <param name="neuronCount"></param>
 /// <param name="activation"></param>
-void Network::addLayer(int previousLayerCount, int neuronCount, double biasWeight, string activation)
+void Network::addLayer(int previousLayerCount, int neuronCount, string activation)
 {
-	Layer* layer = new Layer(previousLayerCount, neuronCount, biasWeight, activation);
+	Layer* layer = new Layer(previousLayerCount, neuronCount, activation);
 	layers.push_back(*layer);
 	delete(layer);
 }
@@ -167,42 +197,44 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 	for (int weightIndex = 0; weightIndex < weights.size(); ++weightIndex)
 	{
 		double gradient;
-		double activationDerivative;
-
-		if (layerCount == 0)
+		double activationDerivative = 0;
+		if (weightIndex == weights.size() - 1)
 		{
-			// Training output layer neuron weights.
-
+			// Bias weight.
+			activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput());
+			errors.push_front(activationDerivative);
+			gradient = this->backpropogate();
+			neuron->trainWeight(weightIndex, learningRate, gradient);
+		}
+		else if (layerCount == 0)
+		{
+			// Last layer
 			Layer layer = this->getLayer(layers.size() - 2);
-			Neuron* connectingNeuron = layer.getNeuron(neuronIndex);
+			Neuron* connectingNeuron = layer.getNeuron(weightIndex);
 
 			double outputDerivative = error * connectingNeuron->getActivationOutput();
-			errors.push_front(outputDerivative);
-			gradient = this->backpropogate();
-			errors.pop_front();
-			neuron->trainWeight(weightIndex, learningRate, gradient);
-
 			activationDerivative = error * neuron->getWeight(weightIndex);
 			errors.push_front(activationDerivative);
+
+			neuron->trainWeight(weightIndex, learningRate, outputDerivative);
 		}
 		else if (layerCount == layers.size() - 1)
-		{	
-			// Training input layer neuron weights.
-
+		{
+			// First Layer
 			list<double>::iterator inputsIt = inputs.begin();
 			advance(inputsIt, weightIndex);
 
 			activationDerivative = neuron->getActivationOutput() * (1 - neuron->getActivationOutput());
 			activationDerivative = activationDerivative * *inputsIt;
-			errors.push_front(activationDerivative * neuron->getWeight(weightIndex));
-
+			errors.push_front(activationDerivative);
 			gradient = this->backpropogate();
+			//cout << gradient << endl;
+
 			neuron->trainWeight(weightIndex, learningRate, gradient);
 		}
 		else
 		{
-			// Training hidden layer neuron weights.
-
+			// Middle Layer
 			Layer layer = this->getLayer((layers.size() - 2) - layerCount);
 			Neuron* connectingNeuron = layer.getNeuron(weightIndex);
 
@@ -211,14 +243,17 @@ void Network::traverseNeuron(Layer layer, int neuronIndex, int layerCount, doubl
 			errors.push_front(activationDerivative * neuron->getWeight(weightIndex));
 
 			gradient = this->backpropogate();
+			errors.pop_front();
+
+			errors.push_front(activationDerivative * neuron->getWeight(weightIndex));
 			neuron->trainWeight(weightIndex, learningRate, gradient);
 		}
 
-		cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
-		cout <<	"Gradient: " << gradient << endl;
-		cout << "--------" << endl;
+		//cout << "Layer: " << layerCount << " - Neuron: " << neuronIndex << " - Weight: " << weightIndex << endl;
+		//cout <<	"Gradient: " << gradient << endl;
+		//cout << "--------" << endl;
 
-		if (weightIndex < weights.size())
+		if (weightIndex < weights.size() - 1)
 		{
 			traverseLayer(layerCount + 1, weightIndex, error);
 		}
@@ -240,6 +275,7 @@ double Network::backpropogate()
 	double weightedTotal = 1;
 	for (int i = 0; i < errors.size(); ++i)
 	{
+		//cout << "derivative: " << *errorsIt << endl;
 		weightedTotal = weightedTotal * *errorsIt;
 		advance(errorsIt, 1);
 	}

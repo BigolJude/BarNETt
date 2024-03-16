@@ -1,3 +1,13 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
+
 #include "Neuron.h"
 #include "Initialisation.h"
 #include "Activation.h"
@@ -30,7 +40,7 @@ Neuron::Neuron(list<double> weights)
 /// <summary>
 /// Sets the sum of all weights in the Neuron in 'weights'. 
 /// </summary>
-void Neuron::weigh(list<double> inputs, double biasWeight)
+void Neuron::weigh(list<double> inputs)
 {
 	list<double>::iterator weightsIt = weights.begin();
 	list<double>::iterator inputsIt = inputs.begin();
@@ -45,13 +55,13 @@ void Neuron::weigh(list<double> inputs, double biasWeight)
 	}
 
 	// Including the weighted bias.
-	//output = output + (1 * biasWeight);
+	output = output + (1 * *weightsIt);
 	//cout << "Bias Weight: "<< *weightsIt << endl;
 	//cout << "Output: " << output << endl;
 	//cout << "-------" << endl;
 
-	this->weight = output;
-	this->activationOutput = Activation::LReLu(this->weight);
+	this->output = output;
+	this->activationOutput = Activation::LReLu(this->output);
 }
 
 /// <summary>
@@ -65,6 +75,7 @@ void Neuron::populateWeights(int neuronCount)
 		double weightedNumber = Initialisation::Random(weightedRange, -weightedRange);
 		this->weights.push_back(weightedNumber);
 	}
+	this->weights.push_back(Initialisation::Random(weightedRange, -weightedRange));
 }
 
 /// <summary>
@@ -74,16 +85,12 @@ void Neuron::populateWeights(int neuronCount)
 /// <param name="error"></param>
 void Neuron::trainWeight(int weightIndex, float learningRate, double gradient)
 {	
-	cout << "-------" << endl;
+	//cout << "-------" << endl;
 	list<double>::iterator weightsIt = weights.begin();
 	advance(weightsIt, weightIndex);
-	cout << "Weight before: " << *weightsIt << endl;
-	*weightsIt = *weightsIt - learningRate * gradient;
-	cout << "Weight after: " << *weightsIt << endl;
-	if (isnan(*weightsIt))
-	{
-		//Breakpoint
-	}
+	//cout << "Weight before: " << *weightsIt << endl;
+	*weightsIt = *weightsIt - (learningRate * gradient);
+	//cout << "Weight after: " << *weightsIt << endl;
 }
 
 /// <summary>
@@ -118,7 +125,7 @@ double Neuron::getWeight(int weightIndex)
 /// <returns>The output of the neuron before activation.</returns>
 double Neuron::getOutput()
 {
-	return this->weight;
+	return this->output;
 }
 
 /// <summary>

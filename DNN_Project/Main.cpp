@@ -15,6 +15,17 @@
 #include "ExampleNetworks.h"
 using namespace std;
 
+// Memory leak debugging
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
+
 int main()
 {
 	list<list<double>> values = CSV::read("..\\DNN_Project\\Dataset\\iris.csv");
@@ -26,7 +37,15 @@ int main()
 	
 	Network* irisNetwork = ExampleNetworks::irisDatasetNetwork();
 	
-	for(int epochs = 0; epochs < 40; ++epochs)
+	Layer layer1 = Layer(4, 4, "relu");
+	Layer layer2 = Layer(4, 3, "relu");
+	
+	Network* network = new Network();
+	
+	network->addLayer(layer1);
+	network->addLayer(layer2);
+	
+	for(int epochs = 0; epochs < 100; ++epochs)
 	{
 		double averageLoss = 0;		
 		vector<list<double>>::iterator valuesIt = valuesVector.begin();
@@ -53,7 +72,7 @@ int main()
 	
 			inputs.pop_back();
 	
-			irisNetwork->train(inputs, 0.0001, expected);
+			network->train(inputs, 0.001, expected);
 	
 			averageLoss = averageLoss + irisNetwork->getError();
 	
@@ -64,4 +83,11 @@ int main()
 		}
 		cout << averageLoss / values.size() << endl;
 	}
+  
+	values.clear();
+	valuesVector.clear();
+	delete(network);
+
+	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+	_CrtDumpMemoryLeaks();
 }

@@ -8,11 +8,12 @@ class Network
 public:
 	Network(list<Layer> layers);
 	Network();
+	~Network();
 	void train(list<double> inputs, float learningRate, list<double>expected);
 	void predict(list<double> inputs);
 	list<double> getPrediction();
 	void addLayer(Layer layer);
-	void addLayer(int previousLayerCount, int neuronCount, double biasWeight,string activation);
+	void addLayer(int previousLayerCount, int neuronCount, string activation);
 	void traverseLayer(int layerCount, int weightIndex, double error);
 	double backpropogate();
 	void traverseNeuron(Layer layer, int neuronIndex, int layerCount, double error);
