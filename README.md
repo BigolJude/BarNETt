@@ -21,6 +21,8 @@ The entire model is contained within a `Network` class. This class contains the 
 
 - To predict inputs in the model we call the `Predict` function of class `Network` and pass in just the inputs. 
 	- example: `Network->Predict({5, 0});`
+ 	- the predicitions then can be obtained using `Network->getPredictions()` which will return a list.
+  	- the predictions are only the outputs of the last layer **not** the values returned from softmax. Softmax can be run after on these values. 	 
 # How it works:
 
 ### Background:
@@ -49,7 +51,7 @@ On the forward pass the layer iterates through the neuron pointers within it's n
 
 Link: https://github.com/BigolJude/DNN_Project/blob/master/DNN_Project/Network.cpp
 
-The network, as expected, has the most responsibility over all of it's components. It contains the top level functions for: training (forwards and backward passes), weighing (forward pass) and adding and removing of layers. 
+The network, as expected, has the most responsibility over all of it's components. It contains the top level functions for: training (forwards and backward passes), weighing (forward pass) and adding layers. 
 
 The network is designed to account for an (n) number of layers within an (n) number of neurons. 
 #### Forward Pass
@@ -112,6 +114,12 @@ Link: https://github.com/BigolJude/DNN_Project/blob/master/DNN_Project/CSV.cpp
 
 The CSV class is a helper method to import datasets into the system. Currently this class only has one function and the function is fixed to import one dataset. The Iris dataset by `(SachGarg, n.d.)`
 
+#### Example Networks
+
+Link: https://github.com/BigolJude/DNN_Project/blob/master/DNN_Project/ExampleNetworks.cpp
+
+The `ExampleNetworks` has three seperate examples of how to build networks within the DNN_Project. One of these examples is used for the iris dataset.
+
 # Current Performance and expected improvements.
 
 Functionally, the forward propagation is complete and working as intended. This can be shown through unit tests. In addition each activation, loss, and initialisation also have unit tests and are functioning correctly. 
@@ -133,7 +141,11 @@ In this case a 2 by 2 network has been created with set weights and a forward an
 
 - **Potential Issues with the dataset** the iris dataset `(SachGarg, n.d.)` could potentially be causing a loss of accuracy. The dataset even on established neural networks will only be accurate to a certain point. After using the dataset with Tensor Flow and Keras the max accuracy with the network was only slightly above 44% on initial run with 40 epochs: ![image](https://github.com/BigolJude/DNN_Project/assets/74246561/d726346a-1a87-49b3-b23e-ed45ad0faec1).
 It should be noted although the Dataset comes from different places the Scikit-learn and the dataset from `(SachGarg, n.d.)` are the same. 
- 
+
+# Conclusion & final notes
+
+While the network is unfortunantly lacking in accuracy, as a teaching mechanism this was invaluable to me. In future, I would like to investigate further into specific architectures in networks and the benefits of potential 'lower-memory' networks. In the immediete future additional progress will be made on this network to focus on the problems regarding it's inaccuracy and potentially adding optimisation algorithms such as Adam and SGD. Considering that the network's learning rate isn't fixed and can be updated for each training set this could potentially be relatively simple to implement.  
+
 # References
 
 1. Maas, A., Hannun, A., & Ng, A. (n.d.). _Rectifier Nonlinearities Improve Neural Network Acoustic Models_. http://ai.stanford.edu/~amaas/papers/relu_hybrid_icml2013_final.pdf

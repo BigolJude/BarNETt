@@ -279,7 +279,6 @@ double Network::backpropogate()
 		weightedTotal = weightedTotal * *errorsIt;
 		advance(errorsIt, 1);
 	}
-	//cout << "------" << endl;
 	return weightedTotal;
 }
 

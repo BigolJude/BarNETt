@@ -12,6 +12,7 @@
 #include "Activation.h"
 #include "Network.h"
 #include "CSV.h"
+#include "ExampleNetworks.h"
 using namespace std;
 
 // Memory leak debugging
@@ -34,7 +35,7 @@ int main()
 	mt19937 generator(randomDevice());
 	shuffle(valuesVector.begin(), valuesVector.end(), generator);
 	
-	cout << "finished" << endl;
+	Network* irisNetwork = ExampleNetworks::irisDatasetNetwork();
 	
 	Layer layer1 = Layer(4, 4, "relu");
 	Layer layer2 = Layer(4, 3, "relu");
@@ -73,7 +74,7 @@ int main()
 	
 			network->train(inputs, 0.001, expected);
 	
-			averageLoss = averageLoss + network->getError();
+			averageLoss = averageLoss + irisNetwork->getError();
 	
 			inputs.clear();
 			expected.clear();
@@ -82,7 +83,7 @@ int main()
 		}
 		cout << averageLoss / values.size() << endl;
 	}
-	
+  
 	values.clear();
 	valuesVector.clear();
 	delete(network);
