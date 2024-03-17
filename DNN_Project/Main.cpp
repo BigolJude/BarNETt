@@ -27,65 +27,53 @@ using namespace std;
 #endif  // _DEBUG
 
 int main()
-{
-	list<list<double>> values = CSV::read("..\\DNN_Project\\Dataset\\iris.csv");
-	
-	vector<list<double>> valuesVector(values.begin(), values.end());
-	random_device randomDevice;
-	mt19937 generator(randomDevice());
-	shuffle(valuesVector.begin(), valuesVector.end(), generator);
-	
-	Network* irisNetwork = ExampleNetworks::irisDatasetNetwork();
-	
-	Layer layer1 = Layer(4, 4, "relu");
-	Layer layer2 = Layer(4, 3, "relu");
+{	
+	Layer layer1 = Layer(2, 4, "relu");
+	Layer layer2 = Layer(4, 10, "relu");
+	Layer layer3 = Layer(10, 2, "relu");
 	
 	Network* network = new Network();
 	
 	network->addLayer(layer1);
 	network->addLayer(layer2);
-	
-	for(int epochs = 0; epochs < 100; ++epochs)
+	network->addLayer(layer3);
+
+	float error = 1;
+	bool mode = true;
+	float learningRate = 0.01;
+
+	while (error > 0.2)
 	{
-		double averageLoss = 0;		
-		vector<list<double>>::iterator valuesIt = valuesVector.begin();
-		for (int i = 0; i < values.size(); ++i)
+		float oldError = error;
+		float tempError = 0;
+
+		network->train({ 0.0 ,0.5 }, learningRate, { 1, 0 });
+		tempError = network->getError();
+		network->train({ 0.5 ,0.0 }, learningRate, { 0, 1 });
+		error = (tempError + network->getError()) / 2;
+
+		float errorDifference = error - oldError;
+
+		if (errorDifference > 0.01)
 		{
-			list<double> inputs = *valuesIt;
-			list<double>::iterator inputsIt = inputs.end();
-			advance(inputsIt, -1);
-	
-			list<double> expected;
-	
-			if (*inputsIt == 1)
-			{
-				expected = { 1,0,0 };
-			}
-			else if (*inputsIt == 2)
-			{
-				expected = { 0, 1, 0 };
-			}
-			else if (*inputsIt == 3)
-			{
-				expected = { 0, 0, 1 };
-			}
-	
-			inputs.pop_back();
-	
-			network->train(inputs, 0.001, expected);
-	
-			averageLoss = averageLoss + irisNetwork->getError();
-	
-			inputs.clear();
-			expected.clear();
-	
-			advance(valuesIt, 1);
+			learningRate = learningRate - 0.001;
 		}
-		cout << averageLoss / values.size() << endl;
+		else if (errorDifference == 0)
+		{
+			learningRate = learningRate + 0.001;
+		}
+
+		mode = !mode;
+		std::cout << error << endl;
 	}
-  
-	values.clear();
-	valuesVector.clear();
+
+	
+	network->predict({ 0.5, 0.0 });
+	list<double> predictions = network->getPrediction();
+
+	network->predict({ 0.0, 0.5 });
+	predictions = network->getPrediction();
+
 	delete(network);
 
 	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);

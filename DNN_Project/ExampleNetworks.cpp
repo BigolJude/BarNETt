@@ -11,10 +11,10 @@ using namespace std;
 /// <returns>A 4 layer network.</returns>
 Network* ExampleNetworks::irisDatasetNetwork()
 {
-	Layer* layer1 = new Layer(4, 4, 0.5, "relu");
-	Layer* layer2 = new Layer(4, 10, 0.5, "relu");
-	Layer* layer3 = new Layer(10, 4, 0.5, "relu");
-	Layer* layer4 = new Layer(4, 3, 0.5, "relu");
+	Layer* layer1 = new Layer(4, 4, "relu");
+	Layer* layer2 = new Layer(4, 10, "relu");
+	Layer* layer3 = new Layer(10, 4, "relu");
+	Layer* layer4 = new Layer(4, 3,  "relu");
 
 	Network* network = new Network();
 
@@ -40,8 +40,8 @@ Network* ExampleNetworks::network2by2()
 	list<Neuron*> neurons1 = { neuron1, neuron2 }; 
 	list<Neuron*> neurons2 = { neuron3, neuron4 };
 
-	Layer* layer1 = new Layer(neurons1, 0.5, "relu");
-	Layer* layer2 = new Layer(neurons2, 0.5, "relu");
+	Layer* layer1 = new Layer(neurons1, "relu");
+	Layer* layer2 = new Layer(neurons2, "relu");
 	
 	Network* network = new Network();
 
@@ -57,9 +57,9 @@ Network* ExampleNetworks::network2by2()
 /// <returns>Network with initalised values.</returns>
 Network* ExampleNetworks::network3by2()
 {
-	Layer* layer1 = new Layer(2, 2, 0.5, "relu");
-	Layer* layer2 = new Layer(2, 2, 0.5, "relu");
-	Layer* layer3 = new Layer(2, 2, 0.5, "relu");
+	Layer* layer1 = new Layer(2, 2, "relu");
+	Layer* layer2 = new Layer(2, 2, "relu");
+	Layer* layer3 = new Layer(2, 2, "relu");
 
 	Network* network = new Network();
 
